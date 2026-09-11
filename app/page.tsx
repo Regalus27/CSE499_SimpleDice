@@ -33,85 +33,81 @@ export default function Home() {
   return (
     <div className="min-h-[calc(100vh-80px)] bg-[var(--bg)] px-4 py-8">
       <div className="mx-auto max-w-5xl rounded-[28px] border border-[var(--border)] bg-white p-6 shadow-[0_10px_30px_rgba(20,42,67,0.08)] md:p-8">
-        <div className="grid gap-8 lg:grid-cols-[1.4fr_0.8fr]">
-          <section className="rounded-[24px] bg-[var(--bg)] p-6">
+        <section className="w-full rounded-[24px] bg-[var(--bg)] p-6">
+          <div className="text-center mb-6">
             <h1 className="text-4xl font-bold tracking-tight text-[var(--navy)]">
               Roll Your Dice
             </h1>
             <p className="mt-2 text-base text-[var(--text)]/75">
               Choose your dice, set the amount, and let fate decide!
             </p>
+          </div>
 
-            <div className="mt-6 grid gap-4 sm:grid-cols-2">
-              <label className="block">
-                <span className="mb-2 block text-sm font-medium text-[var(--text)]">
-                  Dice Type
-                </span>
-                <select
-                  value={selectedDice}
-                  onChange={(e) => setSelectedDice(Number(e.target.value))}
-                  className="w-full rounded-xl border border-[var(--border)] bg-white px-3 py-3 text-[var(--text)] outline-none ring-0 focus:border-[var(--primary)]"
-                >
-                  {diceOptions.map((dice) => (
-                    <option key={dice.label} value={dice.sides}>
-                      {dice.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <label className="block">
-                <span className="mb-2 block text-sm font-medium text-[var(--text)]">
-                  Quantity
-                </span>
-                <div className="flex items-center rounded-xl border border-[var(--border)] bg-white">
-                  <button
-                    type="button"
-                    onClick={() => updateQuantity(-1)}
-                    className="px-4 py-3 text-xl text-[var(--navy)]"
-                  >
-                    −
-                  </button>
-                  <span className="flex-1 text-center text-lg font-semibold text-[var(--text)]">
-                    {quantity}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => updateQuantity(1)}
-                    className="px-4 py-3 text-xl text-[var(--navy)]"
-                  >
-                    +
-                  </button>
-                </div>
-              </label>
-            </div>
-
-            <div className="mt-6 flex items-center gap-4">
-              <button
-                type="button"
-                onClick={handleRoll}
-                className="flex-1 rounded-xl bg-[var(--primary)] px-6 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-[#1268d6]"
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            <label className="block">
+              <span className="mb-2 block text-sm font-medium text-[var(--text)]">
+                Dice Type
+              </span>
+              <select
+                value={selectedDice}
+                onChange={(e) => setSelectedDice(Number(e.target.value))}
+                className="w-full rounded-xl border border-[var(--border)] bg-white px-3 py-3 text-[var(--text)] outline-none focus:border-[var(--primary)]"
               >
-                Roll Dice
-              </button>
-            </div>
+                {diceOptions.map((dice) => (
+                  <option key={dice.label} value={dice.sides}>
+                    {dice.label}
+                  </option>
+                ))}
+              </select>
+            </label>
 
-            <div className="mt-6 flex items-center gap-4">
-              <p className="text-base text-[var(--text)]">
-                The rolled result is:
-                <span className="ml-2 font-bold text-[var(--navy)]">
-                  {result ?? "—"}
+            <label className="block">
+              <span className="mb-2 block text-sm font-medium text-[var(--text)]">
+                Quantity
+              </span>
+              <div className="flex items-center rounded-xl border border-[var(--border)] bg-white">
+                <button
+                  type="button"
+                  onClick={() => updateQuantity(-1)}
+                  className="px-4 py-3 text-xl text-[var(--navy)]"
+                >
+                  −
+                </button>
+
+                <span className="flex-1 text-center text-lg font-semibold text-[var(--text)]">
+                  {quantity}
                 </span>
-              </p>
-            </div>
-          </section>
 
-          <aside className="flex items-center justify-center rounded-[24px] border border-[var(--border)] bg-[var(--bg)] p-6">
-            <div className="flex h-52 w-52 items-center justify-center rounded-[30px] bg-[var(--primary)] shadow-[0_18px_30px_rgba(22,119,232,0.35)]">
-              <span className="text-9xl text-white">🎲</span>
-            </div>
-          </aside>
-        </div>
+                <button
+                  type="button"
+                  onClick={() => updateQuantity(1)}
+                  className="px-4 py-3 text-xl text-[var(--navy)]"
+                >
+                  +
+                </button>
+              </div>
+            </label>
+          </div>
+
+          <div className="mt-6">
+            <button
+              type="button"
+              onClick={handleRoll}
+              className="w-full rounded-xl bg-[var(--primary)] px-6 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-[#1268d6]"
+            >
+              Roll Dice
+            </button>
+          </div>
+
+          <div className="mt-6 border-t border-[var(--border)] pt-6 text-center">
+            <p className="text-base text-[var(--text)]">
+              The rolled result is:
+              <span className="ml-2 font-bold text-[var(--navy)]">
+                {result ?? "—"}
+              </span>
+            </p>
+          </div>
+        </section>
       </div>
     </div>
   );
