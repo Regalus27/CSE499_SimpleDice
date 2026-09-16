@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { saveRollToDatabase } from "./lib/rolls";
 
 const diceOptions = [
   { label: "d4 (4-sided)", sides: 4 },
@@ -31,14 +32,15 @@ export default function Home() {
     console.log(`Rolled ${quantity}d${selectedDice}: ${total} at ${new Date().toISOString()}`);
     
     // if you are logged in it will save rolls to database
-    // if (userIsLoggedIn) {
-    //   saveRollToDatabase({
-    //     dice_type: selectedDice,
-    //     dice_quantity: quantity,
-    //     dice_sum: total,
-    //     time_rolled: new Date().toISOString(),
-    //   });
-    // }
+    const userIsLoggedIn = true; // Replace with actual login check logic
+    if (userIsLoggedIn) {
+      saveRollToDatabase({
+        dice_type: selectedDice,
+        dice_quantity: quantity,
+        dice_sum: total,
+        time_rolled: new Date().toISOString(),
+      });
+    }
 
     setResult(total);
   };

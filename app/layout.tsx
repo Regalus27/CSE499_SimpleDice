@@ -42,18 +42,21 @@ export default function RootLayout({
             </Link>
             <div className='flex items-center gap-6 text-sm font-medium'>
               {/* Navigation links */}
+              {/* Home link */}
               <Link
                 href='/'
                 className='rounded px-3 py-2 text-white/90 hover:bg-white/5 hover:text-white'
               >
                 Dice Roller
               </Link>
+              {/* History link */}
               <Link
                 href='/history'
                 className='rounded px-3 py-2 text-white/90 hover:bg-white/5 hover:text-white'
               >
                 History
               </Link>
+              {/* Login link */}
               <Link
                 href='/login'
                 className='rounded px-3 py-2 text-white/90 hover:bg-white/5 hover:text-white'
