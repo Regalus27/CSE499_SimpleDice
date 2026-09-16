@@ -22,6 +22,23 @@ export default function Home() {
     for (let i = 0; i < quantity; i++) {
       total += Math.floor(Math.random() * selectedDice) + 1;
     }
+    
+    // this is how the database would store the roll information:
+    // dice_type = selectedDice,
+    // dice_quantity = quantity,
+    // dice_sum = total,
+    // time_rolled = new Date().toISOString()
+    console.log(`Rolled ${quantity}d${selectedDice}: ${total} at ${new Date().toISOString()}`);
+    
+    // if you are logged in it will save rolls to database
+    // if (userIsLoggedIn) {
+    //   saveRollToDatabase({
+    //     dice_type: selectedDice,
+    //     dice_quantity: quantity,
+    //     dice_sum: total,
+    //     time_rolled: new Date().toISOString(),
+    //   });
+    // }
 
     setResult(total);
   };
