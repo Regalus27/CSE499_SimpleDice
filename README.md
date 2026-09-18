@@ -5,3 +5,5 @@ Basic 4 week senior project.
 Cooper Anderson - "Would you rather be blind than see your thoughts at play?" (What if... by HeyoMatato)
 
 Braxton Goode - "see a need, fill a need" (Robots 2005)
+
+Edward Griffeth - "Not all those who wander are lost." (J.R.R. Tolkien)
