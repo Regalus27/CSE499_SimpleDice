@@ -8,6 +8,7 @@ const diceOptions = [
   { label: "d6 (6-sided)", sides: 6 },
   { label: "d8 (8-sided)", sides: 8 },
   { label: "d10 (10-sided)", sides: 10 },
+  { label: "d12 (12-sided)", sides: 12 },
   { label: "d20 (20-sided)", sides: 20 },
   { label: "d100 (100-sided)", sides: 100 },
 ];
@@ -38,7 +39,7 @@ export default function Home() {
         dice_type: selectedDice,
         dice_quantity: quantity,
         dice_sum: total,
-        time_rolled: new Date().toISOString(),
+        // time_rolled: new Date().toISOString(),
       });
     }
 
