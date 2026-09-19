@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     // get URI from .env
     // check if it exists
     if (!("DB_URI" in process.env)) {
-        return NextResponse.json({error: "Server Error: Missing Environment Variable."}, {status: 500});
+        return NextResponse.json({ error: "Server Error: Missing Environment Variable."}, {status: 511});
     }
     const uri = process.env.DB_URI!;
 
