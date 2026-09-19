@@ -13,11 +13,7 @@ export async function POST(request: NextRequest) {
     }
 
     // get URI from .env
-    // check if it exists
-    if (!("DB_URI" in process.env)) {
-        return NextResponse.json({ error: "Server Error: Missing Environment Variable."}, {status: 511});
-    }
-    const uri = process.env.DB_URI!;
+    const uri = process.env.DB_URI!; // My method to check if this exists doesn't work on a remote server.
 
     // set up MongoClient
     const client = new MongoClient(uri);
