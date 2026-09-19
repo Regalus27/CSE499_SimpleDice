@@ -30,7 +30,7 @@ export default function Home() {
     // dice_quantity = quantity,
     // dice_sum = total,
     // time_rolled = new Date().toISOString()
-    console.log(`Rolled ${quantity}d${selectedDice}: ${total} at ${new Date().toISOString()}`);
+    // console.log(`Rolled ${quantity}d${selectedDice}: ${total} at ${new Date().toISOString()}`);
     
     // if you are logged in it will save rolls to database
     const userIsLoggedIn = true; // Replace with actual login check logic

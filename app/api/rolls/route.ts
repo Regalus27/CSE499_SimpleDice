@@ -9,11 +9,14 @@ export async function POST(request: NextRequest) {
     try {
         roll = JSON.parse(body) as RollPayload;
     } catch (error) {
-        return NextResponse.json({ error: "Invalid JSON string." }, {status: 400});
+        return NextResponse.json({ error: "Formatting Error: Invalid Dice Roll." }, {status: 400});
     }
 
     // get URI from .env
-    // needs error handling if it is null
+    // check if it exists
+    if (!("DB_URI" in process.env)) {
+        return NextResponse.json({error: "Server Error: Missing Environment Variable."}, {status: 500});
+    }
     const uri = process.env.DB_URI!;
 
     // set up MongoClient
@@ -41,7 +44,7 @@ export async function POST(request: NextRequest) {
     } catch (error) {
         return NextResponse.json({
             success: false,
-            message: "Server Error: Failed to insert data."
+            error: "Server Error: Failed to insert data."
         }, { status: 500 });
     } finally {
         await client.close();
