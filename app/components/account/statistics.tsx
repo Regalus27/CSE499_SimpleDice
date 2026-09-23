@@ -1,16 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-type Roll = {
-  dice_sum: number;
-};
-
-type Statistics = {
-  totalRolls: number;
-  sumOfRolls: number;
-  mostFrequentRoll: number;
-};
+import { fetchAccountStatistics, Statistics } from "../../lib/statistics/fetchStatistics";
 
 export default function AccountStatistics() {
   const [statistics, setStatistics] = useState<Statistics>({
@@ -18,45 +9,12 @@ export default function AccountStatistics() {
     sumOfRolls: 0,
     mostFrequentRoll: 0,
   });
-
   useEffect(() => {
-    async function fetchStatistics() {
-      try {
-        const response = await fetch("/api/rolls");
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch rolls");
-        }
-
-        const data: { rolls: Roll[] } = await response.json();
-        const rolls = data.rolls ?? [];
-
-        const frequency = new Map<number, number>();
-
-        for (const roll of rolls) {
-          frequency.set(
-            roll.dice_sum,
-            (frequency.get(roll.dice_sum) ?? 0) + 1
-          );
-        }
-
-        const mostFrequentRoll =
-          [...frequency.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? 0;
-
-        setStatistics({
-          totalRolls: rolls.length,
-          sumOfRolls: rolls.reduce(
-            (sum, roll) => sum + roll.dice_sum,
-            0
-          ),
-          mostFrequentRoll,
-        });
-      } catch (error) {
-        console.error("Error fetching statistics:", error);
-      }
-    }
-
-    fetchStatistics();
+    const fetchData = async () => {
+      const stats = await fetchAccountStatistics();
+      setStatistics(stats);
+    };
+    fetchData();
   }, []);
 
   return (
