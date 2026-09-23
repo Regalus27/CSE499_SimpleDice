@@ -1,23 +1,575 @@
 @import "tailwindcss";
 
+/* =========================================================
+   LIGHT MODE
+   ========================================================= */
+
 :root {
   --bg: #f4f7fb;
+
   --surface: #ffffff;
+  --surface-secondary: #f1f5f9;
+  --surface-hover: #e8eef6;
+
   --navy: #142a43;
+
   --primary: #1677e8;
+  --primary-hover: #1264c4;
+
   --text: #172b45;
+  --text-muted: #64748b;
+
   --border: #d9e2ec;
+
+  --input-bg: #ffffff;
+
+  --success-bg: #f0fdf4;
+  --success-border: #86efac;
+  --success-text: #166534;
+
+  --error-bg: #fef2f2;
+  --error-border: #fca5a5;
+  --error-text: #b91c1c;
+
+  --shadow:
+    0 10px 30px
+    rgba(20, 42, 67, 0.10);
+
+  --shadow-strong:
+    0 18px 45px
+    rgba(20, 42, 67, 0.14);
 }
+
+
+/* =========================================================
+   DARK MODE
+   ========================================================= */
+
+:root[data-theme="dark"] {
+  --bg: #0f172a;
+
+  --surface: #1e293b;
+  --surface-secondary: #263449;
+  --surface-hover: #334155;
+
+  --navy: #080f1c;
+
+  --primary: #3b82f6;
+  --primary-hover: #60a5fa;
+
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+
+  --border: #475569;
+
+  --input-bg: #162033;
+
+  --success-bg: #052e1b;
+  --success-border: #15803d;
+  --success-text: #86efac;
+
+  --error-bg: #3f1117;
+  --error-border: #b91c1c;
+  --error-text: #fca5a5;
+
+  --shadow:
+    0 10px 30px
+    rgba(0, 0, 0, 0.35);
+
+  --shadow-strong:
+    0 18px 45px
+    rgba(0, 0, 0, 0.5);
+
+  color-scheme: dark;
+}
+
+
+/* =========================================================
+   TAILWIND VARIABLES
+   ========================================================= */
 
 @theme inline {
   --color-background: var(--bg);
   --color-foreground: var(--text);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
+
+/* =========================================================
+   GLOBAL HTML / BODY
+   ========================================================= */
+
+html {
+  min-height: 100%;
+
+  background-color:
+    var(--bg);
+
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+
+
 body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+
+  margin: 0;
+
+  background-color:
+    var(--bg);
+
+  color:
+    var(--text);
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+
+
+/* =========================================================
+   GLOBAL TRANSITIONS
+   ========================================================= */
+
+button,
+input,
+select,
+textarea,
+a,
+div,
+section,
+article,
+main {
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+
+/* =========================================================
+   FORM ELEMENTS
+   ========================================================= */
+
+input,
+select,
+textarea {
+  background-color:
+    var(--input-bg);
+
+  color:
+    var(--text);
+
+  border-color:
+    var(--border);
+}
+
+
+input::placeholder,
+textarea::placeholder {
+  color:
+    var(--text-muted);
+}
+
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color:
+    var(--primary);
+
+  outline:
+    none;
+
+  box-shadow:
+    0 0 0 3px
+    color-mix(
+      in srgb,
+      var(--primary) 18%,
+      transparent
+    );
+}
+
+
+/* =========================================================
+   LINKS
+   ========================================================= */
+
+a {
+  color:
+    inherit;
+
+  text-decoration:
+    none;
+}
+
+
+/* =========================================================
+   REUSABLE APP BACKGROUND
+   ========================================================= */
+
+.app-background {
+  background-color:
+    var(--bg);
+
+  color:
+    var(--text);
+}
+
+
+/* =========================================================
+   REUSABLE CARD
+   ========================================================= */
+
+.app-card {
+  background-color:
+    var(--surface);
+
+  color:
+    var(--text);
+
+  border:
+    1px solid
+    var(--border);
+
+  border-radius:
+    1rem;
+
+  box-shadow:
+    var(--shadow);
+}
+
+
+/* =========================================================
+   SECONDARY SURFACE
+   ========================================================= */
+
+.app-surface-secondary {
+  background-color:
+    var(--surface-secondary);
+
+  color:
+    var(--text);
+}
+
+
+/* =========================================================
+   INPUT STYLE
+   ========================================================= */
+
+.app-input {
+  width: 100%;
+
+  background-color:
+    var(--input-bg);
+
+  color:
+    var(--text);
+
+  border:
+    1px solid
+    var(--border);
+
+  border-radius:
+    0.5rem;
+
+  padding:
+    0.75rem 1rem;
+}
+
+
+.app-input:focus {
+  border-color:
+    var(--primary);
+
+  outline:
+    none;
+
+  box-shadow:
+    0 0 0 3px
+    color-mix(
+      in srgb,
+      var(--primary) 18%,
+      transparent
+    );
+}
+
+
+/* =========================================================
+   MUTED TEXT
+   ========================================================= */
+
+.text-muted {
+  color:
+    var(--text-muted);
+}
+
+
+/* =========================================================
+   PRIMARY BUTTON
+   ========================================================= */
+
+.primary-button {
+  background-color:
+    var(--primary);
+
+  color:
+    #ffffff;
+
+  border:
+    none;
+
+  border-radius:
+    0.5rem;
+
+  padding:
+    0.75rem 1rem;
+
+  font-weight:
+    700;
+
+  cursor:
+    pointer;
+}
+
+
+.primary-button:hover {
+  background-color:
+    var(--primary-hover);
+}
+
+
+/* =========================================================
+   SECONDARY BUTTON
+   ========================================================= */
+
+.secondary-button {
+  background-color:
+    var(--surface-secondary);
+
+  color:
+    var(--text);
+
+  border:
+    1px solid
+    var(--border);
+
+  border-radius:
+    0.5rem;
+
+  padding:
+    0.75rem 1rem;
+
+  cursor:
+    pointer;
+}
+
+
+.secondary-button:hover {
+  background-color:
+    var(--surface-hover);
+}
+
+
+/* =========================================================
+   SUCCESS MESSAGE
+   ========================================================= */
+
+.success-message {
+  background-color:
+    var(--success-bg);
+
+  border:
+    1px solid
+    var(--success-border);
+
+  color:
+    var(--success-text);
+
+  border-radius:
+    0.5rem;
+
+  padding:
+    0.75rem 1rem;
+}
+
+
+/* =========================================================
+   ERROR MESSAGE
+   ========================================================= */
+
+.error-message {
+  background-color:
+    var(--error-bg);
+
+  border:
+    1px solid
+    var(--error-border);
+
+  color:
+    var(--error-text);
+
+  border-radius:
+    0.5rem;
+
+  padding:
+    0.75rem 1rem;
+}
+
+
+/* =========================================================
+   DARK MODE OVERRIDES FOR COMMON TAILWIND COLORS
+
+   These help existing pages that still use fixed Tailwind
+   classes such as bg-white and text-slate-800.
+   ========================================================= */
+
+:root[data-theme="dark"] .bg-white {
+  background-color:
+    var(--surface) !important;
+}
+
+
+:root[data-theme="dark"] .bg-slate-50 {
+  background-color:
+    var(--surface-secondary) !important;
+}
+
+
+:root[data-theme="dark"] .bg-slate-100 {
+  background-color:
+    var(--bg) !important;
+}
+
+
+:root[data-theme="dark"] .bg-gray-50 {
+  background-color:
+    var(--surface-secondary) !important;
+}
+
+
+:root[data-theme="dark"] .bg-gray-100 {
+  background-color:
+    var(--bg) !important;
+}
+
+
+:root[data-theme="dark"] .text-slate-900,
+:root[data-theme="dark"] .text-slate-800,
+:root[data-theme="dark"] .text-slate-700 {
+  color:
+    var(--text) !important;
+}
+
+
+:root[data-theme="dark"] .text-slate-600,
+:root[data-theme="dark"] .text-slate-500,
+:root[data-theme="dark"] .text-slate-400 {
+  color:
+    var(--text-muted) !important;
+}
+
+
+:root[data-theme="dark"] .text-gray-900,
+:root[data-theme="dark"] .text-gray-800,
+:root[data-theme="dark"] .text-gray-700 {
+  color:
+    var(--text) !important;
+}
+
+
+:root[data-theme="dark"] .text-gray-600,
+:root[data-theme="dark"] .text-gray-500,
+:root[data-theme="dark"] .text-gray-400 {
+  color:
+    var(--text-muted) !important;
+}
+
+
+:root[data-theme="dark"] .border-slate-200,
+:root[data-theme="dark"] .border-slate-300,
+:root[data-theme="dark"] .border-gray-200,
+:root[data-theme="dark"] .border-gray-300 {
+  border-color:
+    var(--border) !important;
+}
+
+
+/* =========================================================
+   DARK MODE FORM OVERRIDES
+   ========================================================= */
+
+:root[data-theme="dark"] input,
+:root[data-theme="dark"] select,
+:root[data-theme="dark"] textarea {
+  background-color:
+    var(--input-bg);
+
+  color:
+    var(--text);
+
+  border-color:
+    var(--border);
+}
+
+
+:root[data-theme="dark"] option {
+  background-color:
+    var(--surface);
+
+  color:
+    var(--text);
+}
+
+
+/* =========================================================
+   DARK MODE SHADOW FIX
+   ========================================================= */
+
+:root[data-theme="dark"] .shadow-sm,
+:root[data-theme="dark"] .shadow,
+:root[data-theme="dark"] .shadow-md,
+:root[data-theme="dark"] .shadow-lg,
+:root[data-theme="dark"] .shadow-xl,
+:root[data-theme="dark"] .shadow-2xl {
+  --tw-shadow-color:
+    rgba(0, 0, 0, 0.45);
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+:root {
+  scrollbar-color:
+    #94a3b8 #f4f7fb;
+}
+
+
+:root[data-theme="dark"] {
+  scrollbar-color:
+    #475569 #0f172a;
+}
+
+
+/* =========================================================
+   SELECTION
+   ========================================================= */
+
+::selection {
+  background-color:
+    var(--primary);
+
+  color:
+    #ffffff;
 }
