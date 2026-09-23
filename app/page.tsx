@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { saveRollToDatabase } from "./lib/rolls";
 
 const diceOptions = [
   { label: "d4 (4-sided)", sides: 4 },
   { label: "d6 (6-sided)", sides: 6 },
   { label: "d8 (8-sided)", sides: 8 },
   { label: "d10 (10-sided)", sides: 10 },
+  { label: "d12 (12-sided)", sides: 12 },
   { label: "d20 (20-sided)", sides: 20 },
   { label: "d100 (100-sided)", sides: 100 },
 ];
@@ -21,6 +23,24 @@ export default function Home() {
 
     for (let i = 0; i < quantity; i++) {
       total += Math.floor(Math.random() * selectedDice) + 1;
+    }
+    // Again, copying Braxton's rough draft for testing purposes.
+    // this is how the database would store the roll information:
+    // dice_type = selectedDice,
+    // dice_quantity = quantity,
+    // dice_sum = total,
+    // time_rolled = new Date().toISOString()
+    // console.log(`Rolled ${quantity}d${selectedDice}: ${total} at ${new Date().toISOString()}`);
+    
+    // if you are logged in it will save rolls to database
+    const userIsLoggedIn = true; // Replace with actual login check logic
+    if (userIsLoggedIn) {
+      saveRollToDatabase({
+        dice_type: selectedDice,
+        dice_quantity: quantity,
+        dice_sum: total,
+        // time_rolled: new Date().toISOString(),
+      });
     }
 
     setResult(total);
