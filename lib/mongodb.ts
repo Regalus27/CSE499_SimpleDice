@@ -56,5 +56,5 @@ if (process.env.NODE_ENV !== "production") {
 export async function getDatabase(): Promise<Db> {
   await client.connect();
 
-  return client.db("simpledice");
+  return client.db("db");
 }
