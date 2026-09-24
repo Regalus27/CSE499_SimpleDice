@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Geist, Geist_Mono } from "next/font/google";
+import {
+  Geist,
+  Geist_Mono,
+} from "next/font/google";
 
 import ThemeToggle from "./components/ThemeToggle";
-
 import "./globals.css";
 
 const geistSans = Geist({
@@ -34,28 +36,58 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
-        {/*
-          This script checks the saved theme before React loads.
-
-          This prevents the page from briefly showing light mode
-          before switching to dark mode.
-        */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               try {
-                const savedTheme = localStorage.getItem("simpledice-theme");
+                const cookiePairs = document.cookie
+                  .split("; ")
+                  .filter(Boolean);
 
-                const systemPrefersDark = window.matchMedia(
-                  "(prefers-color-scheme: dark)"
-                ).matches;
+                const cookies = {};
 
-                const theme =
-                  savedTheme === "dark" || savedTheme === "light"
-                    ? savedTheme
-                    : systemPrefersDark
-                      ? "dark"
-                      : "light";
+                for (const cookie of cookiePairs) {
+                  const separatorIndex =
+                    cookie.indexOf("=");
+
+                  if (separatorIndex === -1) {
+                    continue;
+                  }
+
+                  const key =
+                    cookie.slice(
+                      0,
+                      separatorIndex
+                    );
+
+                  const value =
+                    cookie.slice(
+                      separatorIndex + 1
+                    );
+
+                  cookies[key] = value;
+                }
+
+                const savedTheme =
+                  cookies["simpledice-theme"];
+
+                const systemPrefersDark =
+                  window.matchMedia(
+                    "(prefers-color-scheme: dark)"
+                  ).matches;
+
+                let theme = "light";
+
+                if (
+                  savedTheme === "light" ||
+                  savedTheme === "dark"
+                ) {
+                  theme = savedTheme;
+                } else if (
+                  systemPrefersDark
+                ) {
+                  theme = "dark";
+                }
 
                 document.documentElement.setAttribute(
                   "data-theme",
@@ -73,14 +105,8 @@ export default function RootLayout({
       </head>
 
       <body className="min-h-screen bg-[var(--bg)] text-[var(--text)]">
-        {/* ============================= */}
-        {/* HEADER / NAVIGATION */}
-        {/* ============================= */}
-
         <header className="border-b border-[var(--border)] bg-[var(--navy)] text-white shadow-sm">
           <nav className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-4">
-
-            {/* Logo */}
             <Link
               href="/"
               className="flex items-center gap-2 text-xl font-bold"
@@ -94,9 +120,7 @@ export default function RootLayout({
               </span>
             </Link>
 
-            {/* Navigation */}
             <div className="flex flex-wrap items-center gap-2 text-sm font-medium sm:gap-4">
-
               <Link
                 href="/"
                 className="rounded-lg px-3 py-2 text-white/90 transition hover:bg-white/10 hover:text-white"
@@ -118,21 +142,14 @@ export default function RootLayout({
                 Login
               </Link>
 
-              {/* Global dark/light mode toggle */}
               <ThemeToggle />
-
             </div>
           </nav>
         </header>
 
-        {/* ============================= */}
-        {/* PAGE CONTENT */}
-        {/* ============================= */}
-
         <main className="mx-auto w-full max-w-6xl p-6">
           {children}
         </main>
-
       </body>
     </html>
   );

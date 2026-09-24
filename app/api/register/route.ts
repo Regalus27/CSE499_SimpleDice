@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 
-import { getDatabase } from "../../../lib/mongodb";
+import { getDatabase } from "@/lib/mongodb";
 
 const usernamePattern =
   /^[A-Za-z0-9_]{3,20}$/;
@@ -129,12 +129,30 @@ export async function POST(
         status: 201,
       }
     );
-
   } catch (error) {
     console.error(
       "Registration error:",
       error
     );
+
+    if (
+      error instanceof Error &&
+      error.message
+        .toLowerCase()
+        .includes(
+          "authentication failed"
+        )
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Database authentication failed. The provided MongoDB credentials are not being accepted.",
+        },
+        {
+          status: 500,
+        }
+      );
+    }
 
     return NextResponse.json(
       {

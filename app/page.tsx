@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { saveRollToDatabase } from "./lib/rolls";
+import { saveRollToDatabase } from "../lib/rolls";
 
 const diceOptions = [
   { label: "d4 (4-sided)", sides: 4 },
