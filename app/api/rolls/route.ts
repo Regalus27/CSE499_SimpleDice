@@ -73,18 +73,13 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET(request: NextRequest) {
-    const uri = process.env.DB_URI!;
-    const client = new MongoClient(uri);
-
+export async function GET() {
     try {
-        const database = client.db("db");
+        const database = await getDatabase();
         const collection = database.collection("dice_rolls");
         const rolls = await collection.find().toArray();
         return NextResponse.json({ success: true, rolls }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ success: false, error: "Server Error: Failed to fetch data." }, { status: 500 });
-    } finally {
-        await client.close();
     }
 }
