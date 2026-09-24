@@ -5,7 +5,7 @@ import {
   getMostFrequentRoll,
   getSumOfRolls,
   getTotalRolls,
-} from './Stats';
+} from "@/lib/statistics/Stats";
 
 // The structure of Roll represents a single dice roll with its sum.
 export type Roll = {
