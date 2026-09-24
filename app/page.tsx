@@ -5,7 +5,7 @@ import { saveRollToDatabase } from '@/lib/rolls';
 import {
   Statistics,
   sessionStatistics,
-} from './lib/statistics/fetchStatistics';
+} from '@/lib/statistics/fetchStatistics';
 
 const diceOptions = [
   { label: 'd4 (4-sided)', sides: 4 },

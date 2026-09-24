@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchAccountStatistics, Statistics } from "../../lib/statistics/fetchStatistics";
+import { fetchAccountStatistics, Statistics } from "@/lib/statistics/fetchStatistics";
 
 export default function AccountStatistics() {
   const [statistics, setStatistics] = useState<Statistics>({
