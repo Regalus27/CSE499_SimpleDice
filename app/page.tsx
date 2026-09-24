@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { saveRollToDatabase } from './lib/rolls';
+import { saveRollToDatabase } from '@/lib/rolls';
 import {
   Statistics,
   sessionStatistics,
@@ -58,11 +58,11 @@ export default function Home() {
   };
 
   return (
-    <div className='min-h-[calc(100vh-80px)] bg-[var(--bg)] px-4 py-8'>
-      <div className='mx-auto max-w-5xl rounded-[28px] border border-[var(--border)] bg-white p-6 shadow-[0_10px_30px_rgba(20,42,67,0.08)] md:p-8'>
-        <section className='w-full rounded-[24px] bg-[var(--bg)] p-6'>
-          <div className='text-center mb-6'>
-            <h1 className='text-4xl font-bold tracking-tight text-[var(--navy)]'>
+    <div className="min-h-[calc(100vh-80px)] bg-[var(--bg)] px-4 py-8">
+      <div className="mx-auto max-w-5xl rounded-[28px] border border-[var(--border)] bg-white p-6 shadow-[0_10px_30px_rgba(20,42,67,0.08)] md:p-8">
+        <section className="w-full rounded-[24px] bg-[var(--bg)] p-6">
+          <div className="text-center mb-6">
+            <h1 className="text-4xl font-bold text-[var(--text)]">
               Roll Your Dice
             </h1>
             <p className='mt-2 text-base text-[var(--text)]/75'>

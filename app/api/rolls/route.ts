@@ -1,50 +1,76 @@
-import { RollPayload } from '@/app/lib/rolls';
-import { MongoClient, ObjectId } from 'mongodb';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
+import { ObjectId } from "mongodb";
+
+import { getDatabase } from "@/lib/mongodb";
+import type { RollPayload } from "@/lib/rolls";
 
 export async function POST(request: NextRequest) {
-    // convert request to usable data, return bad format if fails
-    const body = await request.text();
-    let roll;
-    try {
-        roll = JSON.parse(body) as RollPayload;
-    } catch (error) {
-        return NextResponse.json({ error: "Formatting Error: Invalid Dice Roll." }, {status: 400});
+  try {
+    const roll: RollPayload = await request.json();
+
+    if (
+      !roll.dice_type ||
+      !roll.dice_quantity ||
+      roll.dice_sum === undefined
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Formatting Error: Invalid Dice Roll.",
+        },
+        {
+          status: 400,
+        }
+      );
     }
 
-    // get URI from .env
-    const uri = process.env.DB_URI!; // My method to check if this exists doesn't work on a remote server.
+    const database = await getDatabase();
 
-    // set up MongoClient
-    const client = new MongoClient(uri);
+    const collection =
+      database.collection("dice_rolls");
 
-    try {
-        const database = client.db("db");
-        const collection = database.collection("dice_rolls");
-        const doc = {
-            // mongodb handles _id
-            activity_id: new ObjectId(), // fake activity id
-            dice_type: roll.dice_type, // I decided using an int is good enough
-            dice_quantity: roll.dice_quantity,
-            dice_sum: roll.dice_sum,
-            time_rolled: new Date(),
-                // updated to use BSON date from mongodb, we can edit RollPayload from rolls.ts and the roll function in the main page 
-                // to remove any date handling
-        };
-        const result = await collection.insertOne(doc);
-        // Send a JSON response back
-        return NextResponse.json({
-            success: true,
-        }, { status: 200 });
-        
-    } catch (error) {
-        return NextResponse.json({
-            success: false,
-            error: "Server Error: Failed to insert data."
-        }, { status: 500 });
-    } finally {
-        await client.close();
-    }
+    const doc = {
+      activity_id: new ObjectId(),
+
+      dice_type: roll.dice_type,
+
+      dice_quantity:
+        roll.dice_quantity,
+
+      dice_sum: roll.dice_sum,
+
+      time_rolled: new Date(),
+    };
+
+    const result =
+      await collection.insertOne(doc);
+
+    return NextResponse.json(
+      {
+        success: true,
+        id: result.insertedId.toString(),
+      },
+      {
+        status: 201,
+      }
+    );
+  } catch (error) {
+    console.error(
+      "Roll save error:",
+      error
+    );
+
+    return NextResponse.json(
+      {
+        success: false,
+        error:
+          "Server Error: Failed to insert data.",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
 }
 
 export async function GET(request: NextRequest) {
