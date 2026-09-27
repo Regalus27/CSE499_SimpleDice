@@ -1,11 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { saveRollToDatabase } from '@/lib/rolls';
-import {
-  Statistics,
-  sessionStatistics,
-} from '@/lib/statistics/fetchStatistics';
+import { sessionStatistics } from '@/lib/statistics/fetchStatistics';
+import type { DiceRoll } from '@/lib/statistics/Stats';
 
 const diceOptions = [
   { label: 'd4 (4-sided)', sides: 4 },
@@ -21,8 +19,13 @@ export default function Home() {
   const [selectedDice, setSelectedDice] = useState(6);
   const [quantity, setQuantity] = useState(1);
   const [result, setResult] = useState<number | null>(null);
-  const [sessionRolls, setSessionRolls] = useState<number[]>([]);
-  const [statistics, setStatistics] = useState<Statistics | null>(null);
+  const [sessionRolls, setSessionRolls] = useState<DiceRoll[]>([]);
+
+  // Derived so the "current die" stat stays in sync whenever the selected die or rolls change.
+  const statistics = useMemo(
+    () => sessionStatistics(sessionRolls, selectedDice),
+    [sessionRolls, selectedDice],
+  );
 
   const handleRoll = () => {
     let total = 0;
@@ -47,10 +50,12 @@ export default function Home() {
       });
     }
 
-    const nextSessionRolls = [...sessionRolls, total];
+    const nextSessionRolls = [
+      ...sessionRolls,
+      { dice_type: selectedDice, dice_sum: total },
+    ];
     setResult(total);
     setSessionRolls(nextSessionRolls);
-    setStatistics(sessionStatistics(nextSessionRolls));
   };
 
   const updateQuantity = (change: number) => {
@@ -58,11 +63,11 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-[var(--bg)] px-4 py-8">
-      <div className="mx-auto max-w-5xl rounded-[28px] border border-[var(--border)] bg-white p-6 shadow-[0_10px_30px_rgba(20,42,67,0.08)] md:p-8">
-        <section className="w-full rounded-[24px] bg-[var(--bg)] p-6">
-          <div className="text-center mb-6">
-            <h1 className="text-4xl font-bold text-[var(--text)]">
+    <div className='min-h-[calc(100vh-80px)] bg-[var(--bg)] px-4 py-8'>
+      <div className='mx-auto max-w-5xl rounded-[28px] border border-[var(--border)] bg-white p-6 shadow-[0_10px_30px_rgba(20,42,67,0.08)] md:p-8'>
+        <section className='w-full rounded-[24px] bg-[var(--bg)] p-6'>
+          <div className='text-center mb-6'>
+            <h1 className='text-4xl font-bold text-[var(--text)]'>
               Roll Your Dice
             </h1>
             <p className='mt-2 text-base text-[var(--text)]/75'>
@@ -96,7 +101,7 @@ export default function Home() {
                 <button
                   type='button'
                   onClick={() => updateQuantity(-1)}
-                  className='px-4 py-3 text-xl text-[var(--navy)]'
+                  className='px-4 py-3 text-xl text-[var(--text)]'
                 >
                   −
                 </button>
@@ -108,7 +113,7 @@ export default function Home() {
                 <button
                   type='button'
                   onClick={() => updateQuantity(1)}
-                  className='px-4 py-3 text-xl text-[var(--navy)]'
+                  className='px-4 py-3 text-xl text-[var(--text)]'
                 >
                   +
                 </button>
@@ -127,29 +132,41 @@ export default function Home() {
           </div>
 
           <div className='mt-6 border-t border-[var(--border)] pt-6 text-center'>
+            <h2 className='text-lg font-semibold text-[var(--text)] mb-2'>
+              Roll Result
+            </h2>
             <p className='text-base text-[var(--text)]'>
               The rolled result is:
-              <span className='ml-2 font-bold text-[var(--navy)]'>
+              <span className='ml-2 font-bold text-[var(--text)]'>
                 {result ?? '—'}
               </span>
             </p>
           </div>
           <div className='mt-6 border-t border-[var(--border)] pt-6 text-center'>
+            <h2 className='text-lg font-semibold text-[var(--text)] mb-2'>
+              Statistics
+            </h2>
             <p className='text-base text-[var(--text)]'>
               Total Rolls:{' '}
-              <span className='font-bold text-[var(--navy)]'>
+              <span className='font-bold text-[var(--text)]'>
                 {statistics?.totalRolls ?? '—'}
               </span>
             </p>
             <p className='text-base text-[var(--text)]'>
               Sum of Rolls:{' '}
-              <span className='font-bold text-[var(--navy)]'>
+              <span className='font-bold text-[var(--text)]'>
                 {statistics?.sumOfRolls ?? '—'}
               </span>
             </p>
             <p className='text-base text-[var(--text)]'>
-              Most Frequent Roll:{' '}
-              <span className='font-bold text-[var(--navy)]'>
+              Most Frequent Roll of current die ({selectedDice} sides):{' '}
+              <span className='font-bold text-[var(--text)]'>
+                {statistics?.mostFrequentRollForCurrentDice ?? '—'}
+              </span>
+            </p>
+            <p className='text-base text-[var(--text)]'>
+              Most Frequent Roll (all dice):{' '}
+              <span className='font-bold text-[var(--text)]'>
                 {statistics?.mostFrequentRoll ?? '—'}
               </span>
             </p>

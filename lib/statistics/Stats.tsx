@@ -1,7 +1,13 @@
+export type DiceRoll = {
+  dice_type: number;
+  dice_sum: number;
+};
+
 export type Stats = {
   totalRolls: number;
   sumOfRolls: number;
   mostFrequentRoll: number;
+  mostFrequentRollForCurrentDice: number;
 };
 
 export const getTotalRolls = (rolls: number[]): number => {
@@ -34,10 +40,31 @@ export const getMostFrequentRoll = (rolls: number[]): number => {
   );
 };
 
-export const Statistics = async (rolls: number[]): Promise<Stats> => {
+// Restricts the most-frequent-roll calculation to rolls made with the given die.
+export const getMostFrequentRollForDice = (
+  rolls: DiceRoll[],
+  diceType: number,
+): number => {
+  const sums = rolls
+    .filter((roll) => roll.dice_type === diceType)
+    .map((roll) => roll.dice_sum);
+
+  return getMostFrequentRoll(sums);
+};
+
+export const Statistics = async (
+  rolls: DiceRoll[],
+  currentDiceType: number,
+): Promise<Stats> => {
+  const sums = rolls.map((roll) => roll.dice_sum);
+
   return {
-    totalRolls: getTotalRolls(rolls),
-    sumOfRolls: getSumOfRolls(rolls),
-    mostFrequentRoll: getMostFrequentRoll(rolls),
+    totalRolls: getTotalRolls(sums),
+    sumOfRolls: getSumOfRolls(sums),
+    mostFrequentRoll: getMostFrequentRoll(sums),
+    mostFrequentRollForCurrentDice: getMostFrequentRollForDice(
+      rolls,
+      currentDiceType,
+    ),
   };
 };
