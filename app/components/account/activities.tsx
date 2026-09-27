@@ -45,7 +45,7 @@ export default function AccountActivities({
 
   return (
     <section>
-      <h2 className="text-2xl font-bold text-[var(--navy)]">Activities</h2>
+      <h2 className="text-2xl font-bold text-[var(--text)]">Activities</h2>
 
       {!isUserLoggedIn ? (
         <p className="mt-6 text-[var(--text)]/75">
@@ -90,7 +90,7 @@ export default function AccountActivities({
               key={activity.id}
               className="rounded-xl border border-[var(--border)] bg-white p-4"
             >
-              <h3 className="font-semibold text-[var(--navy)]">
+              <h3 className="font-semibold text-[var(--text)]">
                 {activity.name}
               </h3>
               <p className="mt-1 text-sm text-[var(--text)]/75">

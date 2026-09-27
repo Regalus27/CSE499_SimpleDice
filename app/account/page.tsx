@@ -21,7 +21,7 @@ export default function AccountPage() {
     <div className="min-h-[calc(100vh-80px)] bg-[var(--bg)] px-4 py-8">
       <div className="mx-auto flex max-w-5xl flex-col gap-6 rounded-[28px] border border-[var(--border)] bg-white p-6 shadow-[0_10px_30px_rgba(20,42,67,0.08)] md:flex-row md:p-8">
         <aside className="md:w-60">
-          <h1 className="mb-6 text-2xl font-bold text-[var(--navy)]">
+          <h1 className='mb-6 text-2xl font-bold text-[var(--text)]'>
             Account Page
           </h1>
 
