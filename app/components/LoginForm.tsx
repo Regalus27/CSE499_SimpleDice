@@ -11,7 +11,7 @@ export default function LoginForm() {
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     setUsernameError("");
@@ -37,12 +37,38 @@ export default function LoginForm() {
       return;
     }
 
-    console.log("Login data:", {
-      username,
-      password,
-    });
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          password,
+        }),
+      });
 
-    alert("Login form is ready to connect to the database.");
+      const data = await response.json();
+
+      if (!response.ok) {
+        setPasswordError(
+          data.error || "Login failed."
+        );
+        return;
+      }
+
+      alert(`Welcome, ${data.user.username}!`);
+    } catch (error) {
+      console.error(
+        "Login request failed:",
+        error
+      );
+
+      setPasswordError(
+        "Unable to connect to the server."
+      );
+    }
   }
 
   return (
@@ -50,7 +76,6 @@ export default function LoginForm() {
       onSubmit={handleSubmit}
       className="space-y-5"
     >
-
       <div>
         <label
           htmlFor="username"
@@ -124,13 +149,8 @@ export default function LoginForm() {
       </div>
 
       <div className="flex items-center justify-between text-sm">
-
         <label className="flex items-center gap-2 text-slate-600">
-
-          <input
-            type="checkbox"
-          />
-
+          <input type="checkbox" />
           Remember me
         </label>
 
@@ -140,7 +160,6 @@ export default function LoginForm() {
         >
           Forgot password?
         </button>
-
       </div>
 
       <button
@@ -151,9 +170,8 @@ export default function LoginForm() {
       </button>
 
       <div className="text-center pt-4 border-t border-slate-200">
-
         <p className="text-slate-500 text-sm">
-          Don't have an account?
+          Don&apos;t have an account?
         </p>
 
         <Link
@@ -162,9 +180,7 @@ export default function LoginForm() {
         >
           Create account
         </Link>
-
       </div>
-
     </form>
   );
 }
