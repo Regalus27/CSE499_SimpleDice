@@ -8,12 +8,12 @@ export default function AccountDetails() {
       </h2>
       <div className='mt-6 space-y-4 text-[var(--text)]'>
         <p>Update the password for your existing SimpleDice account.</p>
-        <Link
+        {/* <Link
           href='/edit'
           className='font-medium text-[var(--primary)] hover:underline'
         >
           Update Password
-        </Link>
+        </Link> */}
       </div>
     </section>
   );
