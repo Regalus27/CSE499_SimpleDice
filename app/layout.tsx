@@ -129,13 +129,6 @@ export default function RootLayout({
               </Link>
 
               <Link
-                href="/history"
-                className="rounded-lg px-3 py-2 text-white/90 transition hover:bg-white/10 hover:text-white"
-              >
-                History
-              </Link>
-
-              <Link
                 href="/login"
                 className="rounded-lg px-3 py-2 text-white/90 transition hover:bg-white/10 hover:text-white"
               >

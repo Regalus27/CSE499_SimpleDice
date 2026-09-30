@@ -1,3 +1,4 @@
+// 
 export type DiceRoll = {
   dice_type: number;
   dice_sum: number;
@@ -10,14 +11,19 @@ export type Stats = {
   mostFrequentRollForCurrentDice: number;
 };
 
+
+// Functions to calculate statistics from dice rolls
+// Get total number of rolls
 export const getTotalRolls = (rolls: number[]): number => {
   return rolls.length;
 };
 
+// Get sum of all rolls
 export const getSumOfRolls = (rolls: number[]): number => {
   return rolls.reduce((sum, roll) => sum + roll, 0);
 };
 
+// Get the most frequent roll
 export const getMostFrequentRoll = (rolls: number[]): number => {
   if (rolls.length === 0) {
     return 0;
@@ -40,7 +46,7 @@ export const getMostFrequentRoll = (rolls: number[]): number => {
   );
 };
 
-// Restricts the most-frequent-roll calculation to rolls made with the given die.
+// Get the most frequent roll for a specific dice type
 export const getMostFrequentRollForDice = (
   rolls: DiceRoll[],
   diceType: number,
@@ -52,6 +58,7 @@ export const getMostFrequentRollForDice = (
   return getMostFrequentRoll(sums);
 };
 
+// Calculate overall statistics for the given dice rolls and current dice type
 export const Statistics = async (
   rolls: DiceRoll[],
   currentDiceType: number,

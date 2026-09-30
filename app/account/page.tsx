@@ -15,7 +15,6 @@ export default function AccountPage() {
   const [activeSection, setActiveSection] =
     useState<AccountSection>("account");
 
-  const isUserLoggedIn = true;
 
   return (
     <div className="min-h-[calc(100vh-80px)] bg-[var(--bg)] px-4 py-8">
@@ -70,7 +69,7 @@ export default function AccountPage() {
           }
 
           {activeSection === "activities" && (
-            <AccountActivities isUserLoggedIn={isUserLoggedIn} />
+            <AccountActivities />
           )}
 
           {activeSection === "statistics" && (
