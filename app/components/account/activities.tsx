@@ -174,10 +174,10 @@ export default function AccountActivities() {
                     {activity.name}
                   </h3>
                   <p className='mt-1 text-sm text-[var(--text)]/75'>
-                    Most Recent Rolls: {activity.MostRecentRolls ?? 'N/A'}
+                    {/* Most Recent Rolls: {activity.MostRecentRolls ?? 'N/A'} */}
                   </p>
                   <p className='mt-1 text-sm text-[var(--text)]/75'>
-                    Last Time Rolled: {activity.LastTimeRolled ?? 'N/A'}
+                    {/* Last Time Rolled: {activity.LastTimeRolled ?? 'N/A'} */}
                   </p>
                 </div>
                 <button
