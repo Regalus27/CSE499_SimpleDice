@@ -1,24 +1,18 @@
 'use client';
-
+// import necessary modules and components
 import { useMemo, useState } from 'react';
 import { saveRollToDatabase } from '@/lib/rolls';
 import { sessionStatistics } from '@/lib/statistics/fetchStatistics';
 import type { DiceRoll } from '@/lib/statistics/Stats';
+import RollDice from './components/homePage/rollDice';
+import type { RollPayload } from '@/lib/rolls';
+import SessionStatistics from './components/homePage/sessionStatistics';
 
-const diceOptions = [
-  { label: 'd4 (4-sided)', sides: 4 },
-  { label: 'd6 (6-sided)', sides: 6 },
-  { label: 'd8 (8-sided)', sides: 8 },
-  { label: 'd10 (10-sided)', sides: 10 },
-  { label: 'd12 (12-sided)', sides: 12 },
-  { label: 'd20 (20-sided)', sides: 20 },
-  { label: 'd100 (100-sided)', sides: 100 },
-];
+
+
 
 export default function Home() {
   const [selectedDice, setSelectedDice] = useState(6);
-  const [quantity, setQuantity] = useState(1);
-  const [result, setResult] = useState<number | null>(null);
   const [sessionRolls, setSessionRolls] = useState<DiceRoll[]>([]);
 
   // Derived so the "current die" stat stays in sync whenever the selected die or rolls change.
@@ -27,150 +21,38 @@ export default function Home() {
     [sessionRolls, selectedDice],
   );
 
-  const handleRoll = () => {
-    let total = 0;
-
-    for (let i = 0; i < quantity; i++) {
-      total += Math.floor(Math.random() * selectedDice) + 1;
-    }
-    // Again, copying Braxton's rough draft for testing purposes.
-    // this is how the database would store the roll information:
-    // dice_type = selectedDice,
-    // dice_quantity = quantity,
-    // dice_sum = total,
-    // time_rolled = new Date().toISOString()
-
-    // if you are logged in it will save rolls to database
-    const userIsLoggedIn = true; // Replace with actual login check logic
+  const handleRoll = (roll: RollPayload) => {
+    const userIsLoggedIn = false; // Replace with actual login check logic
+    
     if (userIsLoggedIn) {
-      saveRollToDatabase({
-        dice_type: selectedDice,
-        dice_quantity: quantity,
-        dice_sum: total,
+      // Save the roll to the database if the user is logged in
+      void saveRollToDatabase(roll).catch((error: unknown) => {
+        console.error('Failed to save roll:', error);
       });
     }
 
-    const nextSessionRolls = [
-      ...sessionRolls,
-      { dice_type: selectedDice, dice_sum: total },
-    ];
-    setResult(total);
-    setSessionRolls(nextSessionRolls);
-  };
-
-  const updateQuantity = (change: number) => {
-    setQuantity((current) => Math.max(1, current + change));
+    setSessionRolls((currentRolls) => [
+      ...currentRolls,
+      { dice_type: roll.dice_type, dice_sum: roll.dice_sum },
+    ]);
   };
 
   return (
     <div className='min-h-[calc(100vh-80px)] bg-[var(--bg)] px-4 py-8'>
       <div className='mx-auto max-w-5xl rounded-[28px] border border-[var(--border)] bg-white p-6 shadow-[0_10px_30px_rgba(20,42,67,0.08)] md:p-8'>
         <section className='w-full rounded-[24px] bg-[var(--bg)] p-6'>
-          <div className='text-center mb-6'>
-            <h1 className='text-4xl font-bold text-[var(--text)]'>
-              Roll Your Dice
-            </h1>
-            <p className='mt-2 text-base text-[var(--text)]/75'>
-              Choose your dice, set the amount, and let fate decide!
-            </p>
-          </div>
+          {/* Roll Dice Component */}
+          <RollDice
+            selectedDice={selectedDice}
+            onDiceChange={setSelectedDice}
+            onRoll={handleRoll}
+          />
 
-          <div className='mt-6 grid gap-4 sm:grid-cols-2'>
-            <label className='block'>
-              <span className='mb-2 block text-sm font-medium text-[var(--text)]'>
-                Dice Type
-              </span>
-              <select
-                value={selectedDice}
-                onChange={(e) => setSelectedDice(Number(e.target.value))}
-                className='w-full rounded-xl border border-[var(--border)] bg-white px-3 py-3 text-[var(--text)] outline-none focus:border-[var(--primary)]'
-              >
-                {diceOptions.map((dice) => (
-                  <option key={dice.label} value={dice.sides}>
-                    {dice.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className='block'>
-              <span className='mb-2 block text-sm font-medium text-[var(--text)]'>
-                Quantity
-              </span>
-              <div className='flex items-center rounded-xl border border-[var(--border)] bg-white'>
-                <button
-                  type='button'
-                  onClick={() => updateQuantity(-1)}
-                  className='px-4 py-3 text-xl text-[var(--text)]'
-                >
-                  −
-                </button>
-
-                <span className='flex-1 text-center text-lg font-semibold text-[var(--text)]'>
-                  {quantity}
-                </span>
-
-                <button
-                  type='button'
-                  onClick={() => updateQuantity(1)}
-                  className='px-4 py-3 text-xl text-[var(--text)]'
-                >
-                  +
-                </button>
-              </div>
-            </label>
-          </div>
-
-          <div className='mt-6'>
-            <button
-              type='button'
-              onClick={handleRoll}
-              className='w-full rounded-xl bg-[var(--primary)] px-6 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-[#1268d6]'
-            >
-              Roll Dice
-            </button>
-          </div>
-
-          <div className='mt-6 border-t border-[var(--border)] pt-6 text-center'>
-            <h2 className='text-lg font-semibold text-[var(--text)] mb-2'>
-              Roll Result
-            </h2>
-            <p className='text-base text-[var(--text)]'>
-              The rolled result is:
-              <span className='ml-2 font-bold text-[var(--text)]'>
-                {result ?? '—'}
-              </span>
-            </p>
-          </div>
-          <div className='mt-6 border-t border-[var(--border)] pt-6 text-center'>
-            <h2 className='text-lg font-semibold text-[var(--text)] mb-2'>
-              Session Statistics
-            </h2>
-            <p className='text-base text-[var(--text)]'>
-              Total Rolls:{' '}
-              <span className='font-bold text-[var(--text)]'>
-                {statistics?.totalRolls ?? '—'}
-              </span>
-            </p>
-            <p className='text-base text-[var(--text)]'>
-              Sum of Rolls:{' '}
-              <span className='font-bold text-[var(--text)]'>
-                {statistics?.sumOfRolls ?? '—'}
-              </span>
-            </p>
-            <p className='text-base text-[var(--text)]'>
-              Most Frequent Roll of current die ({selectedDice} sides):{' '}
-              <span className='font-bold text-[var(--text)]'>
-                {statistics?.mostFrequentRollForCurrentDice ?? '—'}
-              </span>
-            </p>
-            <p className='text-base text-[var(--text)]'>
-              Most Frequent Roll (all dice):{' '}
-              <span className='font-bold text-[var(--text)]'>
-                {statistics?.mostFrequentRoll ?? '—'}
-              </span>
-            </p>
-          </div>
+          {/* Session Statistics Component */}
+          <SessionStatistics
+            statistics={statistics}
+            selectedDice={selectedDice}
+          />
         </section>
       </div>
     </div>
