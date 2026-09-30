@@ -53,6 +53,8 @@ export default function Home() {
             statistics={statistics}
             selectedDice={selectedDice}
           />
+          {/* Activities */}
+          
         </section>
       </div>
     </div>
