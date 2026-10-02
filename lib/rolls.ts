@@ -1,9 +1,9 @@
 // RollPayload and saveRollToDatabase were taken from a branch written by Braxton.
 export type RollPayload = {
+  activity_id?: string;
   dice_type: number;
   dice_quantity: number;
   dice_sum: number;
-  // time_rolled: string;
 };
 
 export async function saveRollToDatabase(roll: RollPayload) {
@@ -15,6 +15,20 @@ export async function saveRollToDatabase(roll: RollPayload) {
 
   if (!response.ok) {
     throw new Error("Failed to save roll");
+  }
+
+  return response.json();
+}
+
+
+
+
+
+export async function fetchRollsForActivity(activityId: string) {
+  const response = await fetch(`/api/rolls?activity_id=${activityId}`);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch rolls");
   }
 
   return response.json();
