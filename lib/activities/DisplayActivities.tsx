@@ -30,7 +30,7 @@ export function DisplayActivities({
   onSelect,
 }: DisplayActivitiesProps) {
   return (
-    <div className='mt-6 grid gap-3'>
+    <div className='mt-6 grid grid-cols-1 gap-3'>
       {activities.map((activity) => {
         // Whether this activity is the one currently selected.
         const isSelected = activity.activityId === selectedId;
@@ -38,7 +38,7 @@ export function DisplayActivities({
         return (
           <article
             key={activity.activityId}
-            className={`rounded-xl border bg-white p-4 ${
+            className={`min-w-0 rounded-xl border bg-white p-4 text-left ${
               isSelected
                 ? 'border-[var(--primary)] ring-2 ring-[var(--primary)]'
                 : 'border-[var(--border)]'
@@ -57,7 +57,7 @@ export function DisplayActivities({
                       }
                       className='h-6 w-6 shrink-0 cursor-pointer accent-[var(--primary)]'
                     />
-                    <span className='min-w-0 truncate'>{activity.name}</span>
+                    <span className='min-w-0 break-words'>{activity.name}</span>
                   </label>
                 ) : (
                   <h3 className='text-xl font-semibold text-[var(--text)]'>
