@@ -8,4 +8,4 @@ Cooper Anderson - "Would you rather be blind than see your thoughts at play?" (W
 
 Edward Griffeth - "Not all those who wander are lost." (J.R.R. Tolkien)
 
-Marcos Murilo Campos dos Santos "To infinity and beyond!" Buzz Lightyear from the Disney and Pixar movie Toy Story (1995)
+Marcos Murilo Campos dos Santos "To infinity and beyond!" Buzz Lightyear from the Disney and Pixar movie Toy Story (1995).
