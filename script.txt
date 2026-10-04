@@ -1,0 +1,102 @@
+SimpleDice Final Presentation Script
+CSE 499 – Final Presentation
+
+Introduction
+Hello everyone. Today our team is presenting SimpleDice, our CSE 499 project.
+SimpleDice is a web application designed to make rolling dice simple and convenient while also providing users with additional features such as accounts, saved roll information, activities, statistics, and customizable light and dark themes.
+During this project, our goal was not only to create a functional dice roller, but also to build a complete web application where users can interact with their own data.
+
+Project Purpose
+The main purpose of SimpleDice is to provide an easy-to-use digital dice roller.
+A user can select the type of die they want to roll and the number of dice they want to use. The application generates the result and can store information about the roll in the database.
+We also expanded the project beyond a basic dice roller by adding user accounts, authentication, activity tracking, statistics, and interface customization.
+
+Main Features
+Our application includes several important features.
+First, we have the dice roller itself. Users can choose from different dice types, such as a D4, D6, D8, D10, D12, D20, and D100.
+The user can also select how many dice they want to roll. The application calculates the result and displays it on the screen.
+We also created an API route that allows dice-roll information to be sent to the database.
+
+Registration
+Another feature I worked on was user registration.
+The registration page allows a new user to create an account using a username and password.
+We simplified the registration form so that it matches the structure of our database, which is designed to handle usernames and passwords.
+Before sending the information to the database, the application validates the username and password.
+For example, the username must meet the required format, and the password must meet the minimum length requirement.
+
+Password Security
+We also wanted to make sure that passwords were handled securely.
+We used bcrypt to hash the user's password before it is stored in the database.
+This means that the application does not store the user's original password directly.
+Instead, bcrypt converts the password into a secure hash.
+So, instead of storing something readable like a user's actual password, the database stores an encrypted-looking value produced by bcrypt.
+This is an important security practice for authentication systems.
+
+Login and Authentication
+The application also includes a login system.
+Users who already have an account can enter their username and password on the login page.
+The authentication system then determines whether the user is logged in and allows the application to associate information with the correct user.
+During Sprint 3, the authentication work included the login page, API routes for login, and session-based authentication.
+
+Dark and Light Mode
+Another feature I worked on was Dark and Light Mode.
+We created two different color palettes for the application.
+The light theme uses lighter backgrounds with darker text, while the dark theme uses darker backgrounds with lighter text.
+Instead of creating completely separate pages for each theme, we use CSS variables.
+For example, variables control the background color, text color, border color, card color, and input color.
+When the user changes the theme, those variables change automatically.
+
+Saving the Theme Preference
+We also wanted the application to remember the user's theme preference between visits.
+We use a browser cookie called simpledice-theme.
+When the user selects Dark Mode, the application saves dark in the cookie.
+If they select Light Mode, it saves light.
+When the user returns to the website, the application reads that cookie and automatically restores the theme they previously selected.
+This improves the user experience because users do not need to choose their preferred theme every time they visit the application.
+
+Shared Code Organization
+During development, we also improved the organization of our project.
+Originally, there were multiple lib directories and some database code was duplicated.
+We reorganized the project so that shared functionality is located in one main lib folder.
+For example, our MongoDB connection is handled by a shared getDatabase() function.
+Both the registration API and the dice-roll API can use the same database connection helper.
+This reduces duplicate code and makes the project easier to maintain.
+
+Account and Activity Features
+The team also worked on account and activity features.
+Activities allow information to be associated with specific uses of the dice roller.
+The account section was developed to show information related to the user, including statistics connected to activities.
+During Sprint 3, the team worked on fixing activity creation, displaying dice-roll statistics, connecting activities to authentication, and setting up account-related functionality.
+
+Technologies Used
+For this project, we used several technologies.
+The frontend and backend were developed using Next.js with React and TypeScript.
+We used Tailwind CSS and custom CSS variables for styling.
+We used MongoDB as our database.
+We used bcrypt for password hashing.
+We also created Next.js API routes for communication between the frontend and backend.
+Git and GitHub were used for version control and team collaboration.
+
+Development Challenges
+One challenge during development was connecting different parts of the application together.
+Registration, login, activities, statistics, and dice rolls all depend on database communication and authentication.
+Some features were temporarily blocked while authentication was being developed.
+Once the authentication work progressed, those blockers were resolved and the team could continue integrating the features.
+We also had to improve the organization of the code so that different API routes could use the same database utilities instead of creating separate connections.
+
+What I Contributed
+My main contributions included working on the registration feature, implementing Dark and Light Mode, improving the shared database connection structure, and helping prepare the project for the final presentation.
+For the theme feature, I created the color system, the theme toggle, and the storage mechanism that remembers the user's preference.
+For registration, I worked on the form, validation, API communication, and bcrypt password hashing.
+During this sprint, I also worked on preparing the presentation script and organizing the material for our final presentation.
+
+Demo Transition
+Now we would like to demonstrate how SimpleDice works.
+We will show the dice roller, the theme switcher, registration and login features, and some of the account and activity functionality.
+During the demonstration, you can see how the different parts of the application work together.
+
+Conclusion
+In conclusion, SimpleDice started as a simple dice-rolling application but developed into a larger web application with user accounts, authentication, database integration, activities, statistics, and interface customization.
+This project gave us experience working as a development team, using GitHub, resolving code conflicts, working with APIs, organizing shared code, connecting a database, and integrating frontend and backend functionality.
+It also helped us understand that creating an application is not only about making individual features work. The features also need to communicate with each other and be organized in a way that makes the project easier to maintain.
+Thank you for listening to our presentation.
