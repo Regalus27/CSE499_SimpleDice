@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { FormEvent, useState } from "react";
+import {useRouter } from "next/navigation";
 
 export default function LoginForm() {
   const [username, setUsername] = useState("");
@@ -10,6 +11,8 @@ export default function LoginForm() {
 
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+
+  const router = useRouter();
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -57,8 +60,8 @@ export default function LoginForm() {
         );
         return;
       }
-
-      alert(`Welcome, ${data.user.username}!`);
+      router.replace("/");
+      
     } catch (error) {
       console.error(
         "Login request failed:",

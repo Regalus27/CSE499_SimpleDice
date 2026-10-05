@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 import { getDatabase } from '@/lib/mongodb';
 
-
 // GET /api/activities - Fetch all activities for the authenticated user
 export async function GET() {
   try {
@@ -16,8 +15,50 @@ export async function GET() {
     const db = await getDatabase();
     const activities = await db
       .collection('activities')
-      .find({ userId: sessionId })
-      .project({ _id: 0, activityId: 1, userId: 1, name: 1 })
+      .aggregate([
+        { $match: { userId: sessionId } },
+        {
+          $lookup: {
+            from: 'dice_rolls',
+            let: { id: '$activityId' },
+            pipeline: [
+              { $match: { $expr: { $eq: ['$activity_id', '$$id'] } } },
+              { $sort: { time_rolled: -1 } },
+              { $limit: 5 },
+              {
+                $project: {
+                  _id: 0,
+                  dice_type: 1,
+                  dice_quantity: 1,
+                  dice_sum: 1,
+                  time_rolled: 1,
+                },
+              },
+            ],
+            as: 'rolls',
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            activityId: 1,
+            userId: 1,
+            name: 1,
+            lastRolled: { $arrayElemAt: ['$rolls.time_rolled', 0] },
+            recentRolls: {
+              $map: {
+                input: '$rolls',
+                as: 'roll',
+                in: {
+                  diceType: '$$roll.dice_type',
+                  quantity: '$$roll.dice_quantity',
+                  result: '$$roll.dice_sum',
+                },
+              },
+            },
+          },
+        },
+      ])
       .toArray();
 
     return NextResponse.json({ activities });
@@ -90,7 +131,10 @@ export async function DELETE(request: Request) {
         : '';
 
     if (!activityId) {
-      return NextResponse.json({ error: 'Activity ID is required' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Activity ID is required' },
+        { status: 400 },
+      );
     }
 
     const db = await getDatabase();
@@ -100,7 +144,10 @@ export async function DELETE(request: Request) {
     });
 
     if (result.deletedCount === 0) {
-      return NextResponse.json({ error: 'Activity not found' }, { status: 404 });
+      return NextResponse.json(
+        { error: 'Activity not found' },
+        { status: 404 },
+      );
     }
 
     return NextResponse.json({ success: true });

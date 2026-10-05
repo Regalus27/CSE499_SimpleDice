@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import AccountLink from "./components/AccountLink";
 import {
   Geist,
   Geist_Mono,
@@ -128,12 +129,7 @@ export default function RootLayout({
                 Dice Roller
               </Link>
 
-              <Link
-                href="/login"
-                className="rounded-lg px-3 py-2 text-white/90 transition hover:bg-white/10 hover:text-white"
-              >
-                Login
-              </Link>
+              <AccountLink />
 
               <ThemeToggle />
             </div>

@@ -1,19 +1,28 @@
 'use client';
 // import necessary modules and components
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { saveRollToDatabase } from '@/lib/rolls';
 import { sessionStatistics } from '@/lib/statistics/fetchStatistics';
 import type { DiceRoll } from '@/lib/statistics/Stats';
 import RollDice from './components/homePage/rollDice';
 import type { RollPayload } from '@/lib/rolls';
 import SessionStatistics from './components/homePage/sessionStatistics';
-
-
-
+import Activities from './components/homePage/activities';
+import { useActivities } from '@/lib/activities/useActivities';
 
 export default function Home() {
   const [selectedDice, setSelectedDice] = useState(6);
   const [sessionRolls, setSessionRolls] = useState<DiceRoll[]>([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [selectedActivityId, setSelectedActivityId] = useState<string>();
+  const {
+    activities,
+    isLoading: activitiesLoading,
+    error: activitiesError,
+    addActivity,
+    removeActivity,
+    refreshActivities,
+  } = useActivities(isLoggedIn);
 
   // Derived so the "current die" stat stays in sync whenever the selected die or rolls change.
   const statistics = useMemo(
@@ -21,20 +30,35 @@ export default function Home() {
     [sessionRolls, selectedDice],
   );
 
-  const handleRoll = (roll: RollPayload) => {
-    const userIsLoggedIn = false; // Replace with actual login check logic
-    
-    if (userIsLoggedIn) {
-      // Save the roll to the database if the user is logged in
-      void saveRollToDatabase(roll).catch((error: unknown) => {
-        console.error('Failed to save roll:', error);
-      });
+  useEffect(() => {
+    async function checkSession() {
+      try {
+        const response = await fetch('/api/session');
+        setIsLoggedIn(response.ok);
+      } catch {
+        setIsLoggedIn(false);
+      }
     }
 
+    void checkSession();
+  }, []);
+
+  const handleRoll = (roll: RollPayload) => {
     setSessionRolls((currentRolls) => [
       ...currentRolls,
       { dice_type: roll.dice_type, dice_sum: roll.dice_sum },
     ]);
+
+    if (isLoggedIn && selectedActivityId) {
+      void saveRollToDatabase({
+        ...roll,
+        activity_id: selectedActivityId,
+      })
+        .then(() => refreshActivities())
+        .catch((error: unknown) =>
+          console.error('Failed to save roll:', error),
+        );
+    }
   };
 
   return (
@@ -54,7 +78,18 @@ export default function Home() {
             selectedDice={selectedDice}
           />
           {/* Activities */}
-          
+          {isLoggedIn && (
+            <Activities
+              isLoggedIn={isLoggedIn}
+              activities={activities}
+              isLoading={activitiesLoading}
+              error={activitiesError}
+              selectedId={selectedActivityId}
+              onSelect={setSelectedActivityId}
+              onCreated={addActivity}
+              onDeleted={removeActivity}
+            />
+          )}
         </section>
       </div>
     </div>
