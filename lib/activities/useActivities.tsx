@@ -21,6 +21,15 @@ export type Activity = {
   recentRolls?: RecentRoll[];
 };
 
+// Updates an existing activity in the local list.
+async function fetchActivities(): Promise<Activity[]> {
+  const response = await fetch('/api/activities');
+  if (!response.ok) throw new Error('Unable to load activities.');
+
+  const data: { activities: Activity[] } = await response.json();
+  return data.activities;
+}
+
 // useActivities hook definition
 // Purpose: Loads the user's activities from the backend and exposes helpers to update the local list.
 // Params: enabled - When false, nothing is fetched (e.g. the user is not logged in).
@@ -31,19 +40,24 @@ export type Activity = {
 export function useActivities(enabled = true) {
   // State for the activity list, loading status, and error messages.
   const [activities, setActivities] = useState<Activity[]>([]);
-  const [isLoading, setIsLoading] = useState(enabled);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Load the activities once when enabled; isMounted prevents updates after unmount.
+  const refreshActivities = useCallback(async () => {
+    setActivities(await fetchActivities());
+  }, []);
+
   useEffect(() => {
     if (!enabled) return;
+
     let isMounted = true;
 
-    fetch('/api/activities')
-      .then(async (response) => {
-        if (!response.ok) throw new Error();
-        const data: { activities: Activity[] } = await response.json();
-        if (isMounted) setActivities(data.activities);
+    fetchActivities()
+      .then((items) => {
+        if (isMounted) {
+          setActivities(items);
+          setError('');
+        }
       })
       .catch(() => {
         if (isMounted) setError('Unable to load activities.');
@@ -69,5 +83,12 @@ export function useActivities(enabled = true) {
     );
   }, []);
 
-  return { activities, isLoading, error, addActivity, removeActivity };
+  return {
+    activities,
+    isLoading,
+    error,
+    addActivity,
+    removeActivity,
+    refreshActivities,
+  };
 }
