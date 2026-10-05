@@ -1,5 +1,5 @@
 Simple Dice Final Presentation Script
-CSE 499 - Final Presentation
+CSE 499 - Final Presentation.
 
 Introduction
 Hello everyone. This week our group is giving a presentation of our CSE 499 project Simple Dice.
