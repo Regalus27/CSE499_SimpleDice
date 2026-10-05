@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import AccountLink from "./components/AccountLink";
+import LogoutLink from "./components/LogoutLink";
 import {
   Geist,
   Geist_Mono,
@@ -131,6 +132,7 @@ export default function RootLayout({
 
               <AccountLink />
 
+              <LogoutLink />
               <ThemeToggle />
             </div>
           </nav>
