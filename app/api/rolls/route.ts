@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
     const roll_id = new ObjectId();
     const roll_doc = {
       _id: roll_id,
-      activity_id: new ObjectId(roll.activity_id),
+      activity_id: roll.activity_id, // modifying this to string to match activities design
       time_rolled: new Date(),
     }
 
