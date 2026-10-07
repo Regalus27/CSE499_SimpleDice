@@ -16,8 +16,8 @@ export type Activity = {
   activityId: string;
   userId: string;
   name: string;
-  lastRolled?: string;
-  recentRolls?: RecentRoll[];
+  lastRolled: string;
+  recentRolls: RecentRoll[];
 };
 
 // Updates an existing activity in the local list.

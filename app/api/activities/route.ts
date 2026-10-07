@@ -25,7 +25,7 @@ export async function GET() {
             pipeline: [
               { $match: { $expr: { $eq: ['$activity_id', '$$activityId'] } } }, // $$id refers to var
               { $sort: { time_rolled: -1 } },
-              { $limit: 1 }, // pull only the most recent roll for each activity
+              { $limit: 100 }, // pull only the most recent rolls for each activity
               {
                 $project: {
                   _id: 1, // need this for next join
@@ -44,7 +44,7 @@ export async function GET() {
             let: { rollId: { $arrayElemAt: ['$rolls._id', 0] } }, // extract roll id from test_rolls table
             pipeline: [
               { $match: { $expr: { $eq: ['$roll_id', '$$rollId'] } } }, // $$id refers to var
-              { $limit: 10 }, // pull up to 10 dice values
+              { $limit: 100 }, // pull up to 100 dice values
               {
                 $project: {
                   _id: 0, // no more joins, don't need
@@ -63,16 +63,26 @@ export async function GET() {
             activityId: 1,
             userId: 1,
             name: 1,
-            lastRolled: { $arrayElemAt: ['$rolls.time_rolled', 0] }, // grab index 0 for timestamp of latest roll
+            lastRolled: { 
+              $ifNull: [
+                { $arrayElemAt: ['$rolls.time_rolled', 0] },  // grab index 0 for timestamp of latest roll
+                "No stored rolls."                            // or placeholder for nulls
+              ]
+            },
             recentRolls: {
-              $map: {
-                input: '$dice_values', // telling which table to use
-                as: 'd',
-                in: {
-                  diceType: '$$d.dice_type',
-                  diceValue: '$$d.dice_result',
+              $ifNull: [
+                { 
+                  $map: {
+                    input: '$dice_values', // telling which table to use
+                    as: 'd',
+                    in: {
+                      diceType: '$$d.dice_type',
+                      diceValue: '$$d.dice_result',
+                    },
+                  }
                 },
-              },
+                [] // null = empty array
+              ]
             },
           },
         },

@@ -39,7 +39,7 @@ export async function saveRollToDatabase(roll: RollPayload) {
   return response.json();
 }
 
-// I don't believe this is every called. Leaving it deprecated.
+// I don't believe this is ever called. Leaving it deprecated.
 export async function fetchRollsForActivity(activityId: string) {
   const response = await fetch(`/api/rolls?activity_id=${activityId}`);
 

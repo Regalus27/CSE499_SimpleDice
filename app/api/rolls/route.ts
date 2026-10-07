@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 import { cookies } from 'next/headers';
-import { getDatabase, getMongoClient } from '@/lib/mongodb';
-import type { RollPayload, RollSchema, RollsWithDiceSchema } from '@/lib/rolls';
-import { DiceRoll } from '@/lib/statistics/Stats';
+import { getMongoClient } from '@/lib/mongodb';
+import type { RollPayload } from '@/lib/rolls';
 
 export async function POST(request: NextRequest) {
   try {
@@ -109,75 +108,6 @@ export async function POST(request: NextRequest) {
       {
         status: 500,
       },
-    );
-  }
-}
-
-export async function GET() {
-  try {
-    const sessionId = (await cookies()).get('session')?.value;
-    if (!sessionId || !ObjectId.isValid(sessionId)) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 },
-      );
-    }
-
-    const database = await getDatabase();
-    const activities = await database
-      .collection('activities')
-      .find({ userId: sessionId })
-      .project({ _id: 0, activityId: 1 }) // activityId: string
-      .toArray();
-
-    /*const rolls = await database
-      .collection('test_roll') // CHANGE
-      .find({ activity_id: { $in: activities.map((a) => a.activityId) } })
-      .sort({ time_rolled: -1 })
-      .toArray();
-    */
-
-    // join tables and match against above activityIds
-    // Grab rolls
-    const rollCollection = database.collection<RollSchema>("test_roll");
-    // Join with dice values
-    const cursor = rollCollection.aggregate<RollsWithDiceSchema>([
-      {
-        $lookup: {
-          from: "test_dice",        // target collection
-          localField: "_id",        // source primary key
-          foreignField: "roll_id",  // target foreign key
-          as: "rolls_with_dice",    
-        },
-      },
-    ]);
-
-    const rollsWithDice = await cursor.toArray();
-
-    // filter to activity id
-    // TODO: Now I know how to do this in one query but I am NOT writing that at 1am
-    const validActivityIds = activities.map((activity) => new ObjectId(activity.activityId));
-    const roll = rollsWithDice.filter(r => validActivityIds.includes(r.activity_id));
-
-    // Convert RollsWithDiceSchema to DiceRoll
-    let diceValues: Array<DiceRoll> = []; // dice_sum (actually dice_value now)
-    const diceRolls = roll.map((roll) => roll.dice_values);
-    for (const diceRoll of diceRolls) {
-      for (const dice of diceRoll) {
-        let object: DiceRoll = {
-          dice_type: dice.dice_type,
-          dice_value: dice.dice_result,
-        };
-        diceValues.push(object);
-      }
-    }
-
-    return NextResponse.json({ success: true, diceValues });
-  } catch (error) {
-    console.error('Roll fetch error:', error);
-    return NextResponse.json(
-      { success: false, error: 'Server Error: Failed to fetch data.' },
-      { status: 500 },
     );
   }
 }
