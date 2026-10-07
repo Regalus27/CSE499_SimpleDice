@@ -1,4 +1,3 @@
-// 
 export type DiceRoll = {
   dice_type: number;
   dice_sum: number;

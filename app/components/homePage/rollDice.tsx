@@ -28,17 +28,19 @@ export default function RollDice({
   const [result, setResult] = useState<number | null>(null);
 
   function handleRoll() {
+    let rolls = [];
     let total = 0;
 
     for (let index = 0; index < quantity; index++) {
-      total += Math.floor(Math.random() * selectedDice) + 1;
+      let lastRoll = Math.floor(Math.random() * selectedDice) + 1
+      rolls.push(lastRoll);
+      total += lastRoll;
     }
 
     setResult(total);
     onRoll({
       dice_type: selectedDice,
-      dice_quantity: quantity,
-      dice_sum: total,
+      dice_rolls: rolls,
     });
   }
 

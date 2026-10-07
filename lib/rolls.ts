@@ -2,8 +2,7 @@
 export type RollPayload = {
   activity_id?: string;
   dice_type: number;
-  dice_quantity: number;
-  dice_sum: number;
+  dice_rolls: number[];
 };
 
 export async function saveRollToDatabase(roll: RollPayload) {
