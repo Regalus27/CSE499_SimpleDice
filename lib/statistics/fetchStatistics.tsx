@@ -31,7 +31,7 @@ export const fetchAccountStatistics = async (): Promise<Statistics> => {
     // Extract all dice rolls
     let diceRolls: Array<DiceRoll> = [];
     for (const activity of data.activities) {
-      for (const rolled of activity.recentRolls) {
+      for (const rolled of activity.globalRolls) {
         // convert from RecentRoll to DiceRoll
         let diceRoll: DiceRoll = {
           dice_type: rolled.diceType,

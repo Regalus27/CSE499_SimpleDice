@@ -25,7 +25,7 @@ export async function GET() {
             pipeline: [
               { $match: { $expr: { $eq: ['$activity_id', '$$activityId'] } } }, // $$id refers to var
               { $sort: { time_rolled: -1 } },
-              { $limit: 100 }, // pull only the most recent rolls for each activity
+              { $limit: 1 }, // pull only the most recent rolls for each activity
               {
                 $project: {
                   _id: 1, // need this for next join
@@ -37,7 +37,7 @@ export async function GET() {
             as: 'rolls',
           },
         },
-        // join #2: test_dice
+        // join #2: test_dice (used in single activity statistics)
         {
           $lookup: {
             from: 'test_dice',
@@ -48,13 +48,30 @@ export async function GET() {
               {
                 $project: {
                   _id: 0, // no more joins, don't need
-                  roll_id: 1,
+                  roll_id: 1, // these need to be linked to rolls
                   dice_type: 1,
                   dice_result: 1,
                 },
               },
             ],
             as: 'dice_values',
+          },
+        },
+        // join #3: test_dice (used in global dice statistics)
+        {
+          $lookup: {
+            from: 'test_dice',
+            pipeline: [
+              {
+                $project: {
+                  _id: 0, // no more joins, don't need
+                  roll_id: 1, // hiding this causes an inclusion/exclusion projection error
+                  dice_type: 1,
+                  dice_result: 1,
+                },
+              },
+            ],
+            as: 'global_dice_values',
           },
         },
         {
@@ -74,6 +91,21 @@ export async function GET() {
                 { 
                   $map: {
                     input: '$dice_values', // telling which table to use
+                    as: 'd',
+                    in: {
+                      diceType: '$$d.dice_type',
+                      diceValue: '$$d.dice_result',
+                    },
+                  }
+                },
+                [] // null = empty array
+              ]
+            },
+            globalRolls: {
+              $ifNull: [
+                { 
+                  $map: {
+                    input: '$global_dice_values', // telling which table to use
                     as: 'd',
                     in: {
                       diceType: '$$d.dice_type',
