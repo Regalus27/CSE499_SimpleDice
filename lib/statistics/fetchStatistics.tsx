@@ -30,15 +30,14 @@ export const fetchAccountStatistics = async (): Promise<Statistics> => {
 
     // Extract all dice rolls
     let diceRolls: Array<DiceRoll> = [];
-    for (const activity of data.activities) {
-      for (const rolled of activity.globalRolls) {
-        // convert from RecentRoll to DiceRoll
-        let diceRoll: DiceRoll = {
-          dice_type: rolled.diceType,
-          dice_value: rolled.diceValue
-        }
-        diceRolls.push(diceRoll);
+    // TODO: add new endpoint just for this now that it functions.
+    for (const rolled of data.activities[0].globalRolls) {
+      // convert from RecentRoll to DiceRoll
+      let diceRoll: DiceRoll = {
+        dice_type: rolled.diceType,
+        dice_value: rolled.diceValue
       }
+      diceRolls.push(diceRoll);
     }
 
     // Account-wide statistics span every dice type, so there is no single "current die" to filter by.
