@@ -58,3 +58,11 @@ export async function getDatabase(): Promise<Db> {
 
   return client.db("db");
 }
+
+// Returns a MongoDb Client, allowing session and transaction creation.
+// https://www.mongodb.com/docs/manual/core/transactions-in-applications/?language-no-dependencies=nodejs#example
+export async function getMongoClient(): Promise<MongoClient> {
+  await client.connect();
+
+  return client;
+}

@@ -1,19 +1,14 @@
 // Fetches statistics for dice rolls from the API and calculates total rolls, sum of rolls, and the most frequent roll.
 
 import {
-  Statistics as calculateStatistics,
+  Statistics,
   getMostFrequentRoll,
   getMostFrequentRollForDice,
   getSumOfRolls,
   getTotalRolls,
   type DiceRoll,
 } from '@/lib/statistics/Stats';
-
-// The structure of Roll represents a single dice roll with its type and sum.
-export type Roll = {
-  dice_type: number;
-  dice_sum: number;
-};
+import { Activity } from '../activities/useActivities';
 
 // The structure of Statistics represents the calculated statistics for dice rolls.
 export type Statistics = {
@@ -24,16 +19,29 @@ export type Statistics = {
 };
 export const fetchAccountStatistics = async (): Promise<Statistics> => {
   try {
-    const response = await fetch('/api/rolls');
+    // Get all activities associated with user
+    const response = await fetch('/api/activities');
 
     if (!response.ok) {
       throw new Error('Failed to fetch rolls');
     }
 
-    const data: { rolls: Roll[] } = await response.json();
+    const data: { activities: Activity[] } = await response.json();
+
+    // Extract all dice rolls
+    let diceRolls: Array<DiceRoll> = [];
+    // TODO: add new endpoint just for this now that it functions.
+    for (const rolled of data.activities[0].globalRolls) {
+      // convert from RecentRoll to DiceRoll
+      let diceRoll: DiceRoll = {
+        dice_type: rolled.diceType,
+        dice_value: rolled.diceValue
+      }
+      diceRolls.push(diceRoll);
+    }
 
     // Account-wide statistics span every dice type, so there is no single "current die" to filter by.
-    const stats = await calculateStatistics(data.rolls, 0);
+    const stats = await Statistics(diceRolls, 0);
 
     return stats;
   } catch (error) {
@@ -60,7 +68,7 @@ export const sessionStatistics = (
     };
   }
 
-  const sums = rolls.map((roll) => roll.dice_sum);
+  const sums = rolls.map((roll) => roll.dice_value);
 
   const total = getTotalRolls(sums);
   const sum = getSumOfRolls(sums);
