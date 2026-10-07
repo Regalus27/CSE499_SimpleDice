@@ -47,12 +47,13 @@ export default function Home() {
 
     // Convert new RollPayload information to a format that is backwards compatable with the statistics system.
     // TODO: Investigate how to update statistics to match new RollPayload.
-    const roll_sum = roll.dice_rolls.reduce((sum, value) => sum + value, 0);
-
-    setSessionRolls((currentRolls) => [
-      ...currentRolls,
-      { dice_type: roll.dice_type, dice_value: roll_sum },
-    ]);
+    // const roll_sum = roll.dice_rolls[0];//roll.dice_rolls.reduce((sum, value) => sum + value, 0); // THIS
+    for (const r of roll.dice_rolls) {
+      setSessionRolls((currentRolls) => [
+        ...currentRolls,
+        { dice_type: roll.dice_type, dice_value: r },
+      ]);
+    }
 
     if (isLoggedIn && selectedActivityId) {
       void saveRollToDatabase({

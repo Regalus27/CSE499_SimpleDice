@@ -63,8 +63,9 @@ export const Statistics = async (
   currentDiceType: number,
 ): Promise<Stats> => {
   // const sums = rolls.map((roll) => roll.dice_sum);
-  const values = rolls.map((roll) => roll.dice_value);
-  return {
+    const values = rolls.map((roll) => roll.dice_value); // if there is an empty, this crashes
+  
+    return {
     totalRolls: getTotalRolls(values),
     sumOfRolls: getSumOfRolls(values),
     mostFrequentRoll: getMostFrequentRoll(values),

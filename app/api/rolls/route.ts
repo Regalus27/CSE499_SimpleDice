@@ -127,7 +127,7 @@ export async function GET() {
     const activities = await database
       .collection('activities')
       .find({ userId: sessionId })
-      .project({ _id: 0, activityId: 1 })
+      .project({ _id: 0, activityId: 1 }) // activityId: string
       .toArray();
 
     /*const rolls = await database
@@ -156,7 +156,7 @@ export async function GET() {
 
     // filter to activity id
     // TODO: Now I know how to do this in one query but I am NOT writing that at 1am
-    const validActivityIds = activities.map((a) => new ObjectId(a.activityId));
+    const validActivityIds = activities.map((activity) => new ObjectId(activity.activityId));
     const roll = rollsWithDice.filter(r => validActivityIds.includes(r.activity_id));
 
     // Convert RollsWithDiceSchema to DiceRoll
@@ -172,7 +172,7 @@ export async function GET() {
       }
     }
 
-    return NextResponse.json({ success: true, roll });
+    return NextResponse.json({ success: true, diceValues });
   } catch (error) {
     console.error('Roll fetch error:', error);
     return NextResponse.json(
