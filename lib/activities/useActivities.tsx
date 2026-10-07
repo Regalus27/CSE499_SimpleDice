@@ -7,8 +7,7 @@ import { useCallback, useEffect, useState } from 'react';
 // A single saved roll as returned with an activity.
 export type RecentRoll = {
   diceType: number;
-  quantity: number;
-  result: number;
+  diceValue: number;
 };
 
 // An activity as returned by GET /api/activities.
@@ -17,8 +16,9 @@ export type Activity = {
   activityId: string;
   userId: string;
   name: string;
-  lastRolled?: string;
-  recentRolls?: RecentRoll[];
+  lastRolled: string;
+  recentRolls: RecentRoll[];
+  globalRolls: RecentRoll[];
 };
 
 // Updates an existing activity in the local list.

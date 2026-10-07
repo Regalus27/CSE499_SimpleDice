@@ -66,14 +66,11 @@ export function DisplayActivities({
                 )}
                 {/* Up to the last 5 rolls, shown as quantity d type: result */}
                 <p className='mt-2 text-base text-[var(--text)]/85'>
-                  Most Recent Rolls:{' '}
+                  Most Recent Roll:{' '}
                   {activity.recentRolls?.length
-                    ? activity.recentRolls
-                        .map(
-                          (roll) =>
-                            `${roll.quantity}d${roll.diceType}: ${roll.result}`,
-                        )
-                        .join(', ')
+                    ? `${activity.recentRolls.length}d${activity.recentRolls[0].diceType}: 
+                    ${activity.recentRolls.reduce((sum, roll) => sum + roll.diceValue, 0)} 
+                    (${activity.recentRolls.map((roll) => roll.diceValue).join(', ')})` 
                     : 'N/A'}
                 </p>
                 {/* Time of the most recent roll for this activity */}
