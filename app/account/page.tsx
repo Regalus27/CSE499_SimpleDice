@@ -2,7 +2,6 @@
 
 // import state and components for the account page
 import { useState } from "react";
-import AccountDetails from "@/app/components/account/details";
 import AccountActivities from "@/app/components/account/activities";
 import AccountStatistics from "@/app/components/account/statistics";
 
@@ -13,7 +12,7 @@ type AccountSection = "account" | "activities" | "statistics";
 
 export default function AccountPage() {
   const [activeSection, setActiveSection] =
-    useState<AccountSection>("account");
+    useState<AccountSection>("activities");
 
 
   return (
@@ -25,17 +24,6 @@ export default function AccountPage() {
           </h1>
 
           <nav className="flex gap-2 overflow-x-auto md:flex-col">
-            <button
-              type="button"
-              onClick={() => setActiveSection("account")}
-              className={`rounded-xl px-4 py-3 text-left font-medium ${
-                activeSection === "account"
-                  ? "bg-[var(--primary)] text-white"
-                  : "text-[var(--text)] hover:bg-[var(--bg)]"
-              }`}
-            >
-              Account Details
-            </button>
 
             <button
               type="button"
@@ -64,9 +52,6 @@ export default function AccountPage() {
         </aside>
 
         <main className="min-h-96 flex-1 rounded-[24px] bg-[var(--bg)] p-6">
-          {activeSection === "account" && 
-          <AccountDetails />
-          }
 
           {activeSection === "activities" && (
             <AccountActivities />
