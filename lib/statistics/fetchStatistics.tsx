@@ -17,6 +17,8 @@ export type Statistics = {
   mostFrequentRoll: number;
   mostFrequentRollForCurrentDice: number;
 };
+
+// Fetches account-wide statistics for dice rolls.
 export const fetchAccountStatistics = async (): Promise<Statistics> => {
   try {
     // Get all activities associated with user
@@ -55,6 +57,7 @@ export const fetchAccountStatistics = async (): Promise<Statistics> => {
   }
 };
 
+// Fetches session-specific statistics for dice rolls.
 export const sessionStatistics = (
   rolls: DiceRoll[],
   currentDiceType: number,
@@ -70,6 +73,7 @@ export const sessionStatistics = (
 
   const sums = rolls.map((roll) => roll.dice_value);
 
+  // Calculate the total rolls, sum of rolls, and most frequent rolls based on the extracted sums.
   const total = getTotalRolls(sums);
   const sum = getSumOfRolls(sums);
   const frequent = getMostFrequentRoll(sums);
@@ -78,6 +82,7 @@ export const sessionStatistics = (
     currentDiceType,
   );
 
+  // Return the calculated statistics for the session.
   return {
     totalRolls: total,
     sumOfRolls: sum,

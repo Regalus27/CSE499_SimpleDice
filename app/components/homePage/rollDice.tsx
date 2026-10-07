@@ -26,7 +26,10 @@ export default function RollDice({
 }: RollDiceProps) {
   const [quantity, setQuantity] = useState(1);
   const [result, setResult] = useState<number | null>(null);
+  
 
+  // Handles the dice roll logic and updates the result and parent component.
+  // Main Logic for rolling the dice.
   function handleRoll() {
     let rolls = [];
     let total = 0;
