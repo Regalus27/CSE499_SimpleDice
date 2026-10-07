@@ -9,12 +9,6 @@ import {
   type DiceRoll,
 } from '@/lib/statistics/Stats';
 
-// The structure of Roll represents a single dice roll with its type and sum.
-export type Roll = {
-  dice_type: number;
-  dice_sum: number;
-};
-
 // The structure of Statistics represents the calculated statistics for dice rolls.
 export type Statistics = {
   totalRolls: number;
@@ -30,7 +24,7 @@ export const fetchAccountStatistics = async (): Promise<Statistics> => {
       throw new Error('Failed to fetch rolls');
     }
 
-    const data: { rolls: Roll[] } = await response.json();
+    const data: { rolls: DiceRoll[] } = await response.json();
 
     // Account-wide statistics span every dice type, so there is no single "current die" to filter by.
     const stats = await calculateStatistics(data.rolls, 0);
@@ -60,7 +54,7 @@ export const sessionStatistics = (
     };
   }
 
-  const sums = rolls.map((roll) => roll.dice_sum);
+  const sums = rolls.map((roll) => roll.dice_value);
 
   const total = getTotalRolls(sums);
   const sum = getSumOfRolls(sums);

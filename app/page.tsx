@@ -51,7 +51,7 @@ export default function Home() {
 
     setSessionRolls((currentRolls) => [
       ...currentRolls,
-      { dice_type: roll.dice_type, dice_sum: roll_sum },
+      { dice_type: roll.dice_type, dice_value: roll_sum },
     ]);
 
     if (isLoggedIn && selectedActivityId) {

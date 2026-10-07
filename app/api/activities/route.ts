@@ -17,25 +17,44 @@ export async function GET() {
       .collection('activities')
       .aggregate([
         { $match: { userId: sessionId } },
+        // join #1: test_roll
         {
           $lookup: {
-            from: 'dice_rolls',
-            let: { id: '$activityId' },
+            from: 'test_roll',
+            let: { activityId: '$activityId' }, // parent id (not _id?) of activities collection
             pipeline: [
-              { $match: { $expr: { $eq: ['$activity_id', '$$id'] } } },
+              { $match: { $expr: { $eq: ['$activity_id', '$$activityId'] } } }, // $$id refers to var
               { $sort: { time_rolled: -1 } },
-              { $limit: 5 },
+              { $limit: 1 }, // pull only the most recent roll for each activity
               {
                 $project: {
-                  _id: 0,
-                  dice_type: 1,
-                  dice_quantity: 1,
-                  dice_sum: 1,
-                  time_rolled: 1,
+                  _id: 1, // need this for next join
+                  activity_id: 1, 
+                  time_rolled: 1, // used in sorting
                 },
               },
             ],
             as: 'rolls',
+          },
+        },
+        // join #2: test_dice
+        {
+          $lookup: {
+            from: 'test_dice',
+            let: { rollId: { $arrayElemAt: ['$rolls._id', 0] } }, // extract roll id from test_rolls table
+            pipeline: [
+              { $match: { $expr: { $eq: ['$roll_id', '$$rollId'] } } }, // $$id refers to var
+              { $limit: 10 }, // pull up to 10 dice values
+              {
+                $project: {
+                  _id: 0, // no more joins, don't need
+                  roll_id: 1,
+                  dice_type: 1,
+                  dice_result: 1,
+                },
+              },
+            ],
+            as: 'dice_values',
           },
         },
         {
@@ -44,15 +63,14 @@ export async function GET() {
             activityId: 1,
             userId: 1,
             name: 1,
-            lastRolled: { $arrayElemAt: ['$rolls.time_rolled', 0] },
+            lastRolled: { $arrayElemAt: ['$rolls.time_rolled', 0] }, // grab index 0 for timestamp of latest roll
             recentRolls: {
               $map: {
-                input: '$rolls',
-                as: 'roll',
+                input: '$dice_values', // telling which table to use
+                as: 'd',
                 in: {
-                  diceType: '$$roll.dice_type',
-                  quantity: '$$roll.dice_quantity',
-                  result: '$$roll.dice_sum',
+                  diceType: '$$d.dice_type',
+                  diceValue: '$$d.dice_result',
                 },
               },
             },

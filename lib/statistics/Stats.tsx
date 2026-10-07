@@ -1,6 +1,6 @@
 export type DiceRoll = {
   dice_type: number;
-  dice_sum: number;
+  dice_value: number; // renamed to reflect database changes
 };
 
 export type Stats = {
@@ -52,7 +52,7 @@ export const getMostFrequentRollForDice = (
 ): number => {
   const sums = rolls
     .filter((roll) => roll.dice_type === diceType)
-    .map((roll) => roll.dice_sum);
+    .map((roll) => roll.dice_value);
 
   return getMostFrequentRoll(sums);
 };
@@ -62,12 +62,12 @@ export const Statistics = async (
   rolls: DiceRoll[],
   currentDiceType: number,
 ): Promise<Stats> => {
-  const sums = rolls.map((roll) => roll.dice_sum);
-
+  // const sums = rolls.map((roll) => roll.dice_sum);
+  const values = rolls.map((roll) => roll.dice_value);
   return {
-    totalRolls: getTotalRolls(sums),
-    sumOfRolls: getSumOfRolls(sums),
-    mostFrequentRoll: getMostFrequentRoll(sums),
+    totalRolls: getTotalRolls(values),
+    sumOfRolls: getSumOfRolls(values),
+    mostFrequentRoll: getMostFrequentRoll(values),
     mostFrequentRollForCurrentDice: getMostFrequentRollForDice(
       rolls,
       currentDiceType,

@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 import { cookies } from 'next/headers';
 import { getDatabase, getMongoClient } from '@/lib/mongodb';
-import type { RollPayload } from '@/lib/rolls';
+import type { RollPayload, RollSchema, RollsWithDiceSchema } from '@/lib/rolls';
+import { DiceRoll } from '@/lib/statistics/Stats';
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,7 +16,7 @@ export async function POST(request: NextRequest) {
     }
     const roll: RollPayload = await request.json();
 
-    if (!roll.dice_type || roll.dice_rolls === undefined) { // TEST
+    if (!roll.dice_type || roll.dice_rolls === undefined) {
       return NextResponse.json(
         {
           success: false,
@@ -47,13 +48,6 @@ export async function POST(request: NextRequest) {
         { status: 404 },
       );
     }
-
-    const doc = { // CHANGE dice_rolls needs to be unpacked into multiple dice objects and then insert many in a transaction
-      activity_id: roll.activity_id,
-      dice_type: roll.dice_type,
-      dice_rolls: roll.dice_rolls,
-      time_rolled: new Date(),
-    };
 
     // Create new roll_id to tie rolls and dice
     // Technically not guaranteed to be unique, but ensuring this is unique is beyond the scope of a low-stakes 4 week project.
@@ -136,13 +130,49 @@ export async function GET() {
       .project({ _id: 0, activityId: 1 })
       .toArray();
 
-    const rolls = await database
+    /*const rolls = await database
       .collection('test_roll') // CHANGE
       .find({ activity_id: { $in: activities.map((a) => a.activityId) } })
       .sort({ time_rolled: -1 })
       .toArray();
+    */
 
-    return NextResponse.json({ success: true, rolls });
+    // join tables and match against above activityIds
+    // Grab rolls
+    const rollCollection = database.collection<RollSchema>("test_roll");
+    // Join with dice values
+    const cursor = rollCollection.aggregate<RollsWithDiceSchema>([
+      {
+        $lookup: {
+          from: "test_dice",        // target collection
+          localField: "_id",        // source primary key
+          foreignField: "roll_id",  // target foreign key
+          as: "rolls_with_dice",    
+        },
+      },
+    ]);
+
+    const rollsWithDice = await cursor.toArray();
+
+    // filter to activity id
+    // TODO: Now I know how to do this in one query but I am NOT writing that at 1am
+    const validActivityIds = activities.map((a) => new ObjectId(a.activityId));
+    const roll = rollsWithDice.filter(r => validActivityIds.includes(r.activity_id));
+
+    // Convert RollsWithDiceSchema to DiceRoll
+    let diceValues: Array<DiceRoll> = []; // dice_sum (actually dice_value now)
+    const diceRolls = roll.map((roll) => roll.dice_values);
+    for (const diceRoll of diceRolls) {
+      for (const dice of diceRoll) {
+        let object: DiceRoll = {
+          dice_type: dice.dice_type,
+          dice_value: dice.dice_result,
+        };
+        diceValues.push(object);
+      }
+    }
+
+    return NextResponse.json({ success: true, roll });
   } catch (error) {
     console.error('Roll fetch error:', error);
     return NextResponse.json(
